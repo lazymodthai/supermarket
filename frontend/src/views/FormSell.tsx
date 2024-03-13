@@ -4,53 +4,53 @@ import { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 
 interface PropsSell {}
-const mock = [
-  { id: 1, item: "12312" },
-  { id: 2, item: "12312" },
-  { id: 3, item: "12312" },
-];
-
-const sumList = [
-  { id: 1, item: "จำนวนสินค้า" },
-  { id: 2, item: "ยอดชำระ" },
-];
 
 export default function FormSell(props: PropsSell) {
   const [load, setLoad] = useState<boolean>(false);
   const [id, setId] = useState<number>(0);
   const [mode, setMode] = useState<string>("");
   const [productList, setProductList] = useState<any>([]);
+  const [total, setTotal] = useState<any>(0);
+  const [vat, setVat] = useState<any>(0);
 
-  const getId = (id: number) => {
-    console.log(id);
-  };
+  useEffect(() => {
+    console.log(productList);
+    const sum = productList.reduce((accumulator: any, currentValue: any) => {
+      return accumulator + currentValue.total;
+    }, 0);
+    setTotal(sum);
+    setVat((sum * 7) / 100);
+  }, [productList]);
 
   return (
     <Grid2 xs={12} container gap={4}>
       <Grid2 xs={7}>
         <TableSell
           load={load}
-          id={(id, name, price) => {
+          id={(id, name, price, mode) => {
             if (productList.some((item: any) => item.id === id)) {
               const res = productList.map((item: any) => {
                 if (item.id === id) {
                   return {
                     ...item,
-                    qty: item.qty + 1,
-                    total: item.price * (item.qty + 1),
+                    qty: mode === "ADD" ? item.qty + 1 : item.qty - 1,
+                    total:
+                      item.price *
+                      (mode === "ADD" ? item.qty + 1 : item.qty - 1),
                   };
                 } else {
+                  console.log(1);
                   return item;
                 }
               });
-              setProductList(res);
+              const res2 = res.filter((item: any) => item.qty !== 0);
+              setProductList(res2);
             } else {
               setProductList([
                 ...productList,
                 { id: id, name: name, price: price, qty: 1, total: price },
               ]);
             }
-            getId(id);
           }}
           count={(val) => null}
         />
@@ -109,13 +109,41 @@ export default function FormSell(props: PropsSell) {
                   paddingX={"30px"}
                   paddingY={"4px"}
                 >
-                  <Grid2>จำนวนเงินที่ต้องชำระ</Grid2>
+                  <Grid2>ราคารวม</Grid2>
                   <Grid2>
-                    {productList
-                      .reduce((accumulator: any, currentValue: any) => {
-                        return accumulator + currentValue.total;
-                      }, 0)
-                      .toLocaleString()}{" "}
+                    {(total - vat).toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                    })}{" "}
+                    บาท
+                  </Grid2>
+                </Grid2>
+                <Grid2
+                  display={"flex"}
+                  justifyContent={"space-between"}
+                  sx={{ color: "black" }}
+                  paddingX={"30px"}
+                  paddingY={"4px"}
+                >
+                  <Grid2>VAT 7%</Grid2>
+                  <Grid2>
+                    {vat.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                    })}{" "}
+                    บาท
+                  </Grid2>
+                </Grid2>
+                <Grid2
+                  display={"flex"}
+                  justifyContent={"space-between"}
+                  sx={{ color: "black" }}
+                  paddingX={"30px"}
+                  paddingY={"4px"}
+                >
+                  <Grid2>ยอดชำระ</Grid2>
+                  <Grid2>
+                    {total.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                    })}{" "}
                     บาท
                   </Grid2>
                 </Grid2>

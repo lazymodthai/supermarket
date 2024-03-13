@@ -15,8 +15,8 @@ import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 const baseUrl = "http://localhost:4900";
 
 interface PropsTable {
-  id: (id: any, name: any, qty: any) => void;
-  count: (val: number) => void;
+  id: (id: any, name: any, qty: any, mode: any) => void;
+  count?: (val: number) => void;
   load?: boolean;
 }
 
@@ -141,23 +141,62 @@ export default function TableSell(props: PropsTable) {
                 {row.name}
               </StyledTableCell>
               <StyledTableCell align="center">{row.price}</StyledTableCell>
-              <StyledTableCell align="center">
+              <StyledTableCell
+                align="center"
+                sx={{ color: row.shelf === 0 ? "red" : "" }}
+              >
                 {row.shelf === 0 ? "หมด" : row.shelf}
               </StyledTableCell>
               <StyledTableCell align="center">
                 <QueueIcon
                   sx={{
-                    color: "#009060",
+                    color: row.shelf === 0 ? "gray" : "#009060",
                     cursor: "pointer",
                     marginRight: "10px",
                   }}
-                  onClick={() =>
-                    props.id && props.id(row.product_id, row.name, row.price)
-                  }
+                  onClick={() => {
+                    if (row.shelf === 0) return;
+                    props.id &&
+                      props.id(row.product_id, row.name, row.price, "ADD");
+                    const newRow = rowData.map((item: any) => {
+                      if (item.product_id === row.product_id) {
+                        return { ...item, shelf: row.shelf - 1 };
+                      } else {
+                        return item;
+                      }
+                    });
+
+                    setRowData(newRow);
+                  }}
                 />
                 <RemoveCircleIcon
-                  sx={{ color: "#DF5454", cursor: "pointer" }}
-                  onClick={() => null}
+                  sx={{
+                    color:
+                      resData.find(
+                        (item: any) => item.product_id === row.product_id
+                      )?.shelf <= row.shelf
+                        ? "gray"
+                        : "#DF5454",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    if (
+                      resData.find(
+                        (item: any) => item.product_id === row.product_id
+                      )?.shelf <= row.shelf
+                    )
+                      return;
+                    props.id &&
+                      props.id(row.product_id, row.name, row.price, "REMOVE");
+                    const newRow = rowData.map((item: any) => {
+                      if (item.product_id === row.product_id) {
+                        return { ...item, shelf: row.shelf + 1 };
+                      } else {
+                        return item;
+                      }
+                    });
+                    setRowData(newRow);
+                  }}
                 />
               </StyledTableCell>
             </StyledTableRow>
