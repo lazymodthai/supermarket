@@ -6,6 +6,7 @@ import FormProduct from "./FormProduct";
 import { useState } from "react";
 import FormSupplier from "./FormSupplier";
 import FormEmployee from "./FormEmployee";
+import FormMember from "./FormMember";
 
 export default function Main() {
   const buttonStyle = {
@@ -108,6 +109,7 @@ export default function Main() {
           {menu === 1 && <FormProduct />}
           {menu === 2 && <FormSupplier />}
           {menu === 3 && <FormEmployee />}
+          {menu === 4 && <FormMember />}
         </Grid2>
       </Grid2>
     </>
