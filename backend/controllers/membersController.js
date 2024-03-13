@@ -41,7 +41,7 @@ router.post("/", (req, res) => {
 router.put("/", (req, res) => {
   connection.query(
     "UPDATE `members` SET `name`= ?, `tel`= ?, `point`= ? WHERE member_id = ?",
-    [req.body.name, req.body.tel, req.body.point],
+    [req.body.name, req.body.tel, req.body.point, req.body.member_id],
     (err, results) => {
       res.json(results);
     }
@@ -49,10 +49,12 @@ router.put("/", (req, res) => {
 });
 
 //DELETE
-router.delete("/", (req, res) => {
+//DELETE
+router.delete("/:id", (req, res) => {
+  const id = req.params.id;
   connection.query(
     "DELETE FROM `members` WHERE member_id = ?",
-    [req.body.member_id],
+    [id],
     (err, results) => {
       res.json(results);
     }

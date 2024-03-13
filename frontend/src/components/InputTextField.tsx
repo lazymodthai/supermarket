@@ -5,6 +5,7 @@ interface InputProps {
   label: string;
   value?: any;
   type?: "text" | "number";
+  required?: boolean;
 }
 
 export default function InputTextField(props: InputProps) {
@@ -17,10 +18,11 @@ export default function InputTextField(props: InputProps) {
       value={props.value}
       InputLabelProps={{
         sx: {
-          fontSize: "1.2em",
+          fontSize: "1em",
           fontFamily: "Pridi",
         },
       }}
+      required={props.required}
     />
   );
 }

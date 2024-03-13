@@ -41,7 +41,13 @@ router.post("/", (req, res) => {
 router.put("/", (req, res) => {
   connection.query(
     "UPDATE `supplier` SET `name`= ?, `address`= ?, `contact_name`= ?, `tel`= ? WHERE supplier_id = ?",
-    [req.body.name, req.body.address, req.body.contact_name, req.body.tel],
+    [
+      req.body.name,
+      req.body.address,
+      req.body.contact_name,
+      req.body.tel,
+      req.body.supplier_id,
+    ],
     (err, results) => {
       res.json(results);
     }
@@ -49,10 +55,11 @@ router.put("/", (req, res) => {
 });
 
 //DELETE
-router.delete("/", (req, res) => {
+router.delete("/:id", (req, res) => {
+  const id = req.params.id;
   connection.query(
     "DELETE FROM `supplier` WHERE supplier_id = ?",
-    [req.body.supplier_id],
+    [id],
     (err, results) => {
       res.json(results);
     }

@@ -9,7 +9,7 @@ const billsController = require("./controllers/billsController");
 const productsBillsController = require("./controllers/productsBillsController");
 
 const app = express();
-const port = 5000;
+const port = 4900;
 
 app.use(cors());
 app.use(bodyParser.json());

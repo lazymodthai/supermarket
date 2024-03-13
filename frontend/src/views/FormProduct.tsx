@@ -31,8 +31,11 @@ export default function FormProduct() {
   const [formData, setFormData] = useState<formData>(formInit);
   const [supplier, setSupplier] = useState<any>([]);
   const [load, setLoad] = useState<boolean>(false);
+  const [id, setId] = useState<number>(0);
+  const [mode, setMode] = useState<string>("ADD");
+  const [count, setCount] = useState<number>(0);
 
-  const baseUrl = "http://localhost:5000";
+  const baseUrl = "http://localhost:4900";
   const handleError = (error: any) => {
     console.error(
       "Error:",
@@ -56,16 +59,37 @@ export default function FormProduct() {
       .catch(handleError);
   }, []);
 
-  const handleSubmit = () => {
-    if (formData.name !== "") {
+  useEffect(() => {
+    if (id) {
       axios
-        .post(`${baseUrl}/products`, formData)
+        .get(`${baseUrl}/products/${id}`)
         .then((response) => {
-          console.log("New Product Added:", response.data);
-          setLoad(!load);
-          setFormData(formInit);
+          setFormData(response.data[0]);
         })
         .catch(handleError);
+    }
+  }, [id]);
+
+  const handleSubmit = () => {
+    if (formData.name !== "") {
+      if (mode === "ADD") {
+        axios
+          .post(`${baseUrl}/products`, formData)
+          .then((response) => {
+            setLoad(!load);
+            setFormData(formInit);
+          })
+          .catch(handleError);
+      } else {
+        axios
+          .put(`${baseUrl}/products`, formData)
+          .then((response) => {
+            setLoad(!load);
+            setFormData(formInit);
+            setMode("ADD");
+          })
+          .catch(handleError);
+      }
     }
   };
 
@@ -79,20 +103,21 @@ export default function FormProduct() {
         xs={12}
       >
         <Grid2 xs={12}>
-          <Typo value="เพิ่มสินค้า" />
+          <Typo value="สินค้า" />
         </Grid2>
         <Grid2 container xs={12}>
-          <Grid2 container xs={4} gap={4}>
+          <Grid2 container xs={3} gap={2}>
             <InputTextField
               label={"ชื่อสินค้า"}
               value={formData.name}
               onChange={(e) =>
                 setFormData({ ...formData, name: e.target.value })
               }
+              required
             />
             <InputTextField
               label={"รายละเอียดสินค้า"}
-              value={formData.name}
+              value={formData.product_desc}
               onChange={(e) =>
                 setFormData({ ...formData, product_desc: e.target.value })
               }
@@ -104,6 +129,7 @@ export default function FormProduct() {
               onChange={(e) =>
                 setFormData({ ...formData, cost: e.target.value })
               }
+              required
             />
             <InputTextField
               type="number"
@@ -112,6 +138,7 @@ export default function FormProduct() {
               onChange={(e) =>
                 setFormData({ ...formData, price: e.target.value })
               }
+              required
             />
             <InputTextField
               type="number"
@@ -120,6 +147,7 @@ export default function FormProduct() {
               onChange={(e) =>
                 setFormData({ ...formData, stock: e.target.value })
               }
+              required
             />
             <InputTextField
               type="number"
@@ -128,42 +156,61 @@ export default function FormProduct() {
               onChange={(e) =>
                 setFormData({ ...formData, shelf: e.target.value })
               }
+              required
             />
             <Autocomplete
               disablePortal
+              value={
+                supplier.find((i: any) => {
+                  return i.supplier_id === formData.supplier_id;
+                })?.name || ""
+              }
               options={supplier.map((item: any) => {
-                return { label: item.name, id: item.supplier_id };
+                return { label: item.name, supplier_id: item.supplier_id };
               })}
               renderInput={(params) => (
                 <TextField {...params} label="ซัพพลายเออร์" />
               )}
               fullWidth
               sx={{
-                fontSize: "1.2em",
+                fontSize: "1em",
                 fontFamily: "Pridi",
               }}
               onChange={(e, val: any) => {
-                setFormData({ ...formData, supplier_id: Number(val.id) });
+                setFormData({ ...formData, supplier_id: val.supplier_id });
               }}
             />
             <Button
               variant="contained"
               fullWidth
               size="large"
-              color="success"
+              color="secondary"
               sx={buttonStyle}
               onClick={handleSubmit}
             >
-              เพิ่ม
+              เพิ่ม/แก้ไข
             </Button>
           </Grid2>
-          <Grid2 xs={8} padding={"0 32px"}>
+          <Grid2
+            xs={9}
+            padding={"0 32px"}
+            // bgcolor={"red"}
+            // maxHeight={"500px"}
+            // overflow={"scroll"}
+          >
             <Typo
-              value="รายการสินค้าที่มีอยู่"
+              value={`รายการสินค้า (${count})`}
               variant="h5"
               sx={{ marginBottom: "16px" }}
             />
-            <TableProduct load={load} />
+            <TableProduct
+              load={load}
+              id={(id, type) => {
+                setId(id);
+                setMode(type);
+              }}
+              count={(val) => setCount(val)}
+            />
           </Grid2>
         </Grid2>
       </Grid2>

@@ -39,21 +39,18 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 function createData(
-  product_id: number,
+  employee_id: number,
   name: string,
-  productDesc: string,
-  cost: number,
-  price: number,
-  stock: number,
-  shelf: number,
-  supplier: string
+  address: string,
+  tel: string,
+  salary: number
 ) {
-  return { product_id, name, productDesc, cost, price, stock, shelf, supplier };
+  return { employee_id, name, address, tel, salary };
 }
 
-export default function TableProduct(props: PropsTable) {
+export default function TableEmployee(props: PropsTable) {
   const [resData, setResData] = useState<any>([]);
-  const [supplier, setSupplier] = useState<any>([]);
+  const [employee, setEmployee] = useState<any>([]);
   const [rowData, setRowData] = useState<any>([]);
 
   const handleError = (error: any) => {
@@ -65,16 +62,16 @@ export default function TableProduct(props: PropsTable) {
 
   const loadData = () => {
     axios
-      .get(`${baseUrl}/products`)
+      .get(`${baseUrl}/employee`)
       .then((response) => {
         setResData(response.data);
       })
       .catch(handleError);
 
     axios
-      .get(`${baseUrl}/supplier`)
+      .get(`${baseUrl}/employee`)
       .then((response) => {
-        setSupplier(response.data);
+        setEmployee(response.data);
       })
       .catch(handleError);
   };
@@ -87,14 +84,11 @@ export default function TableProduct(props: PropsTable) {
     if (resData) {
       const i = resData.map((item: any) => {
         return createData(
-          item.product_id,
+          item.employee_id,
           item.name,
-          item.product_desc,
-          item.cost,
-          item.price,
-          item.stock,
-          item.shelf,
-          supplier.find((k: any) => k.supplier_id === item.supplier_id)?.name
+          item.address,
+          item.tel,
+          item.salary
         );
       });
       setRowData(i);
@@ -105,7 +99,7 @@ export default function TableProduct(props: PropsTable) {
   const handleRemove = (id: number) => {
     if (id) {
       axios
-        .delete(`${baseUrl}/products/${id}`)
+        .delete(`${baseUrl}/employee/${id}`)
         .then((response) => {
           console.log(`Deleted ${response.data}`);
           loadData();
@@ -119,13 +113,10 @@ export default function TableProduct(props: PropsTable) {
       <Table sx={{ minWidth: 700 }} aria-label="customized table" stickyHeader>
         <TableHead>
           <TableRow>
-            <StyledTableCell align="center">ชื่อสินค้า</StyledTableCell>
-            <StyledTableCell align="center">รายละเอียดสินค้า</StyledTableCell>
-            <StyledTableCell align="center">ราคาทุน</StyledTableCell>
-            <StyledTableCell align="center">ราคาสินค้า</StyledTableCell>
-            <StyledTableCell align="center">จำนวนในสต๊อก</StyledTableCell>
-            <StyledTableCell align="center">จำนวนบนชั้นวาง</StyledTableCell>
-            <StyledTableCell align="center">ซัพพลายเออร์</StyledTableCell>
+            <StyledTableCell align="center">ชื่อพนักงาน</StyledTableCell>
+            <StyledTableCell align="center">ที่อยู่</StyledTableCell>
+            <StyledTableCell align="center">เบอร์โทรศัพท์</StyledTableCell>
+            <StyledTableCell align="center">เงินเดือน</StyledTableCell>
             <StyledTableCell align="center">แก้ไข</StyledTableCell>
             <StyledTableCell align="center">ลบ</StyledTableCell>
           </TableRow>
@@ -136,24 +127,21 @@ export default function TableProduct(props: PropsTable) {
               <StyledTableCell component="th" scope="row" align="center">
                 {row.name}
               </StyledTableCell>
+              <StyledTableCell align="center">{row.address}</StyledTableCell>
+              <StyledTableCell align="center">{row.tel}</StyledTableCell>
               <StyledTableCell align="center">
-                {row.productDesc}
+                {row.salary.toLocaleString()}
               </StyledTableCell>
-              <StyledTableCell align="center">{row.cost}</StyledTableCell>
-              <StyledTableCell align="center">{row.price}</StyledTableCell>
-              <StyledTableCell align="center">{row.stock}</StyledTableCell>
-              <StyledTableCell align="center">{row.shelf}</StyledTableCell>
-              <StyledTableCell align="center">{row.supplier}</StyledTableCell>
               <StyledTableCell align="center">
                 <EditIcon
                   sx={{ color: "#3361FC", cursor: "pointer" }}
-                  onClick={() => props.id && props.id(row.product_id, "EDIT")}
+                  onClick={() => props.id && props.id(row.employee_id, "EDIT")}
                 />
               </StyledTableCell>
               <StyledTableCell align="center">
                 <DeleteIcon
                   sx={{ color: "#D62929", cursor: "pointer" }}
-                  onClick={() => handleRemove(row.product_id)}
+                  onClick={() => handleRemove(row.employee_id)}
                 />
               </StyledTableCell>
             </StyledTableRow>

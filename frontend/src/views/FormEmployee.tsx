@@ -3,25 +3,25 @@ import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import { useEffect, useState } from "react";
 import InputTextField from "../components/InputTextField";
 import Typo from "../components/Typo";
-import TableSupplier from "../components/TableSupplier";
+import TableEmployee from "../components/TableEmployee";
 import axios from "axios";
 
 interface formData {
   name: string;
   address: string;
-  contact_name: string;
   tel: string;
+  salary: number;
 }
 
-export default function FormSupplier() {
+export default function FormEmployee() {
   const formInit = {
     name: "",
     address: "",
-    contact_name: "",
     tel: "",
+    salary: 0,
   };
   const [formData, setFormData] = useState<formData>(formInit);
-  const [supplier, setSupplier] = useState<any>([]);
+  const [employee, setEmployee] = useState<any>([]);
   const [load, setLoad] = useState<boolean>(false);
   const [id, setId] = useState<number>(0);
   const [mode, setMode] = useState<string>("ADD");
@@ -44,9 +44,9 @@ export default function FormSupplier() {
 
   useEffect(() => {
     axios
-      .get(`${baseUrl}/supplier`)
+      .get(`${baseUrl}/employee`)
       .then((response) => {
-        setSupplier(response.data);
+        setEmployee(response.data);
       })
       .catch(handleError);
   }, []);
@@ -54,7 +54,7 @@ export default function FormSupplier() {
   useEffect(() => {
     if (id) {
       axios
-        .get(`${baseUrl}/supplier/${id}`)
+        .get(`${baseUrl}/employee/${id}`)
         .then((response) => {
           setFormData(response.data[0]);
         })
@@ -66,7 +66,7 @@ export default function FormSupplier() {
     if (formData.name !== "") {
       if (mode === "ADD") {
         axios
-          .post(`${baseUrl}/supplier`, formData)
+          .post(`${baseUrl}/employee`, formData)
           .then((response) => {
             setLoad(!load);
             setFormData(formInit);
@@ -74,7 +74,7 @@ export default function FormSupplier() {
           .catch(handleError);
       } else {
         axios
-          .put(`${baseUrl}/supplier`, formData)
+          .put(`${baseUrl}/employee`, formData)
           .then((response) => {
             setLoad(!load);
             setFormData(formInit);
@@ -95,12 +95,12 @@ export default function FormSupplier() {
         xs={12}
       >
         <Grid2 xs={12}>
-          <Typo value="ซัพพลายเออร์" />
+          <Typo value="พนักงาน" />
         </Grid2>
         <Grid2 container xs={12}>
           <Grid2 container xs={3} gap={2}>
             <InputTextField
-              label={"ชื่อซัพพลายเออร์"}
+              label={"ชื่อพนักงาน"}
               value={formData.name}
               onChange={(e) =>
                 setFormData({ ...formData, name: e.target.value })
@@ -113,13 +113,7 @@ export default function FormSupplier() {
               onChange={(e) =>
                 setFormData({ ...formData, address: e.target.value })
               }
-            />
-            <InputTextField
-              label={"ชื่ิอผู้ติดต่อ"}
-              value={formData.contact_name || ""}
-              onChange={(e) =>
-                setFormData({ ...formData, contact_name: e.target.value })
-              }
+              required
             />
             <InputTextField
               label={"เบอร์โทรศัพท์"}
@@ -127,6 +121,15 @@ export default function FormSupplier() {
               onChange={(e) =>
                 setFormData({ ...formData, tel: e.target.value })
               }
+              required
+            />
+            <InputTextField
+              label={"เงินเดือน"}
+              value={formData.salary || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, salary: e.target.value })
+              }
+              required
             />
             <Button
               variant="contained"
@@ -147,11 +150,11 @@ export default function FormSupplier() {
             // overflow={"scroll"}
           >
             <Typo
-              value={`รายชื่อซัพพลายเออร์ (${count})`}
+              value={`รายชื่อพนักงาน (${count})`}
               variant="h5"
               sx={{ marginBottom: "16px" }}
             />
-            <TableSupplier
+            <TableEmployee
               load={load}
               id={(id, type) => {
                 setId(id);

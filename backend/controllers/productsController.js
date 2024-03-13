@@ -68,10 +68,11 @@ router.put("/", (req, res) => {
 });
 
 //DELETE
-router.delete("/", (req, res) => {
+router.delete("/:id", (req, res) => {
+  const id = req.params.id;
   connection.query(
     "DELETE FROM `products` WHERE product_id = ?",
-    [req.body.product_id],
+    [id],
     (err, results) => {
       res.json(results);
     }
