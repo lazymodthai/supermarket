@@ -32,6 +32,7 @@ router.post("/", (req, res) => {
     "INSERT INTO `members`(`name`, `tel`, `point`) VALUES (?, ?, ?)",
     [req.body.name, req.body.tel, req.body.point],
     (err, results) => {
+      console.log(err);
       res.json(results);
     }
   );

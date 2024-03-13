@@ -1,4 +1,4 @@
-import { Button, Paper } from "@mui/material";
+import { Button } from "@mui/material";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 
 // Form
@@ -7,6 +7,7 @@ import { useState } from "react";
 import FormSupplier from "./FormSupplier";
 import FormEmployee from "./FormEmployee";
 import FormMember from "./FormMember";
+import FormSell from "./FormSell";
 
 export default function Main() {
   const buttonStyle = {
@@ -110,6 +111,7 @@ export default function Main() {
           {menu === 2 && <FormSupplier />}
           {menu === 3 && <FormEmployee />}
           {menu === 4 && <FormMember />}
+          {menu === 6 && <FormSell />}
         </Grid2>
       </Grid2>
     </>
