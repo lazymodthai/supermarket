@@ -1,7 +1,7 @@
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import TableSell from "../components/TableSell";
 import { useEffect, useState } from "react";
-import { Box, Button } from "@mui/material";
+import { Autocomplete, Box, Button, TextField } from "@mui/material";
 import axios from "axios";
 
 interface PropsSell {
@@ -15,6 +15,9 @@ export default function FormSell(props: PropsSell) {
   const [productList, setProductList] = useState<any>([]);
   const [total, setTotal] = useState<any>(0);
   const [vat, setVat] = useState<any>(0);
+  const [discount, setDiscount] = useState<any>(0);
+  const [members, setMembers] = useState<any>([]);
+  const [member, setMember] = useState<any>({});
   const baseUrl = "http://localhost:4900";
   const handleError = (error: any) => {
     console.error(
@@ -23,25 +26,58 @@ export default function FormSell(props: PropsSell) {
     );
   };
 
+  const setMem = () => {
+    axios
+      .get(`${baseUrl}/members`)
+      .then((response) => {
+        setMembers(response.data);
+      })
+      .catch(handleError);
+  };
+
   useEffect(() => {
     const sum = productList.reduce((accumulator: any, currentValue: any) => {
       return accumulator + currentValue.total;
     }, 0);
-    setTotal(sum);
+    setTotal(sum - discount);
     setVat((sum * 7) / 100);
   }, [productList]);
 
-  const purchase = () => {
+  useEffect(() => {
+    setMem();
+  }, []);
+
+  const purchase = async () => {
     const sellList = productList.map((item: any) => ({
       shelf: item.qty,
       product_id: item.id,
+      employee_id: props.employee.employee_id,
+      member_id: member.member_id,
+      point: member.point,
+      date: Date.now(),
+      discount: discount,
+      total_summary: total,
     }));
 
-    axios
+    const success = () => {
+      setLoad(!load);
+      setProductList([]);
+      setDiscount(0);
+      setMember([]);
+      setMem();
+    };
+
+    console.log(sellList);
+    await axios
       .put(`${baseUrl}/products/sell`, [...sellList])
       .then((response) => {
-        setLoad(!load);
-        setProductList([]);
+        success();
+      })
+      .catch(handleError);
+    await axios
+      .post(`${baseUrl}/products/bill`, [...sellList])
+      .then((response) => {
+        success();
       })
       .catch(handleError);
   };
@@ -84,6 +120,56 @@ export default function FormSell(props: PropsSell) {
             }}
             count={(val) => null}
           />
+        </Grid2>
+        <Grid2 xs={12} container display={"flex"} gap={2}>
+          <Grid2 xs={12} display={"flex"} alignItems={"center"}>
+            <Autocomplete
+              // clearIcon={false}
+              value={member.name || ""}
+              options={members.map((item: any) => {
+                return { ...item, label: item.name };
+              })}
+              renderInput={(params) => <TextField {...params} label="สมาชิก" />}
+              fullWidth
+              sx={{
+                fontSize: "1em",
+                fontFamily: "Pridi",
+              }}
+              onChange={(e, val: any) => {
+                val === null ? setMember([]) : setMember(val);
+              }}
+              disabled={discount > 0}
+            />
+          </Grid2>
+          <Grid2
+            xs={12}
+            sx={{ color: "black" }}
+            display={"flex"}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+            width={"100%"}
+          >
+            <Grid2 xs={6}>
+              {`แต้มสมาชิก: ${Number(member.point || 0).toLocaleString()} แต้ม`}
+            </Grid2>
+            <Grid2 xs={6}>
+              <Button
+                variant="contained"
+                size="large"
+                color="success"
+                // sx={buttonStyle}
+                onClick={() => {
+                  if (member.point > 500) {
+                    setDiscount(50);
+                    setMember({ ...member, point: member.point - 500 });
+                  }
+                }}
+                disabled={member.point <= 100 || discount > 0}
+              >
+                ใช้ส่วนลด
+              </Button>
+            </Grid2>
+          </Grid2>
         </Grid2>
         <Grid2 xs={12}>
           <Button
@@ -174,6 +260,16 @@ export default function FormSell(props: PropsSell) {
                     })}{" "}
                     บาท
                   </Grid2>
+                </Grid2>
+                <Grid2
+                  display={"flex"}
+                  justifyContent={"space-between"}
+                  sx={{ color: "black" }}
+                  paddingX={"30px"}
+                  paddingY={"4px"}
+                >
+                  <Grid2>ส่วนลด</Grid2>
+                  <Grid2>{discount} บาท</Grid2>
                 </Grid2>
                 <Grid2
                   display={"flex"}

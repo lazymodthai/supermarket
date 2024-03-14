@@ -87,13 +87,78 @@ router.put("/sell", (req, res) => {
     });
   });
 
-  Promise.all(promises)
-    .then((results) => {
-      res.json(results);
+  Promise.all(promises).then(() => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        "INSERT INTO `bills`(`total_summary`, `discount`, `employee_id`, `member_id`) VALUES (?, ?, ?, ?)",
+        [
+          req.body[0].total_summary,
+          req.body[0].discount,
+          req.body[0].employee_id,
+          req.body[0].member_id,
+        ],
+        (err, results) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(results);
+          }
+        }
+      );
+      if (req.body[0].member_id) {
+        connection.query(
+          "UPDATE `members` SET `point` =  ? WHERE `member_id` = ?",
+          [req.body[0].point, req.body[0].member_id],
+          (err, results) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(results);
+            }
+          }
+        );
+      }
     })
-    .catch((err) => {
+      .then((results) => {
+        res.json(results);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  });
+});
+
+router.post("/bill", (req, res) => {
+  connection.query("SELECT LAST_INSERT_ID()", (err, rows) => {
+    if (err) {
       console.error(err);
+      return;
+    }
+    const lastId = rows[0]["LAST_INSERT_ID()"];
+    const promises = req.body.map((item) => {
+      return new Promise((resolve, reject) => {
+        connection.query(
+          `INSERT INTO products_bills (bill_id, product_id, quantity) VALUES (?, ?, ?)`,
+          [lastId, item.product_id, item.shelf],
+          (err, results) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(results);
+            }
+          }
+        );
+      });
     });
+
+    Promise.all(promises)
+      .then((results) => {
+        res.json(results);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  });
 });
 
 //DELETE

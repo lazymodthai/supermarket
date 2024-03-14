@@ -160,7 +160,6 @@ export default function FormProduct(props: FormProduct) {
               required
             />
             <Autocomplete
-              disablePortal
               value={
                 supplier.find((i: any) => {
                   return i.supplier_id === formData.supplier_id;

@@ -17,7 +17,8 @@ export default function FormLogin(props: PropsLogin) {
       axios
         .post(`${baseUrl}/employee/login`, { password: pw })
         .then((response) => {
-          localStorage.setItem("employee", response.data[0].name);
+          const { password, ...data } = response.data[0];
+          localStorage.setItem("employee", JSON.stringify(data));
           window.location.reload();
         })
         .catch(() => setErr("รหัสผ่านผิด"));

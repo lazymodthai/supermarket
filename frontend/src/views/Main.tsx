@@ -19,12 +19,13 @@ export default function Main() {
     fontFamily: "Pridi",
   };
   const [menu, setMenu] = useState<number>(0);
-  const [employee, setEmployee] = useState<any>("");
+  const [employee, setEmployee] = useState<any>();
 
   useEffect(() => {
-    const employee = localStorage.getItem("employee");
-    if (employee) setEmployee(employee);
-  });
+    const emp: any = localStorage.getItem("employee");
+    const emp2: any = JSON.parse(emp);
+    if (emp) setEmployee(emp2);
+  }, []);
 
   useEffect(() => {
     employee ? setMenu(6) : setMenu(0);
@@ -115,7 +116,7 @@ export default function Main() {
               ขายสินค้า
             </Button>
             <Box sx={{ color: "black", display: "flex", gap: 2 }}>
-              {`พนักงาน: ${employee || "โปรดเข้าสู่ระบบ"}`}
+              {`พนักงาน: ${employee ? employee?.name : "โปรดเข้าสู่ระบบ"}`}
               {employee ? (
                 <Link
                   onClick={() => {
