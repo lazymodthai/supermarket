@@ -7,7 +7,7 @@ import TableProduct from "../components/TableProduct";
 import axios from "axios";
 
 interface FormProduct {
-  name?: string;
+  product_name?: string;
   product_desc?: string;
   quantity?: number;
   cost?: number;
@@ -20,7 +20,7 @@ interface FormProduct {
 
 export default function FormProduct(props: FormProduct) {
   const formInit = {
-    name: "",
+    product_name: "",
     product_desc: "",
     quantity: 0,
     cost: 0,
@@ -72,7 +72,7 @@ export default function FormProduct(props: FormProduct) {
   }, [id]);
 
   const handleSubmit = () => {
-    if (formData.name !== "") {
+    if (formData.product_name !== "") {
       if (mode === "ADD") {
         axios
           .post(`${baseUrl}/products`, formData)
@@ -110,9 +110,9 @@ export default function FormProduct(props: FormProduct) {
           <Grid2 container xs={3} gap={2}>
             <InputTextField
               label={"ชื่อสินค้า"}
-              value={formData.name}
+              value={formData.product_name}
               onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
+                setFormData({ ...formData, product_name: e.target.value })
               }
               required
             />

@@ -10,6 +10,8 @@ import FormMember from "./FormMember";
 import FormSell from "./FormSell";
 import FormLogin from "./FormLogin";
 import Typo from "../components/Typo";
+import Dashboard from "./Dashboard";
+import Swal from "sweetalert2";
 
 export default function Main() {
   const buttonStyle = {
@@ -146,6 +148,7 @@ export default function Main() {
           {menu === 2 && <FormSupplier employee={employee} />}
           {menu === 3 && <FormEmployee employee={employee} />}
           {menu === 4 && <FormMember employee={employee} />}
+          {menu === 5 && <Dashboard employee={employee} />}
           {menu === 6 && <FormSell employee={employee} />}
         </Grid2>
       </Grid2>

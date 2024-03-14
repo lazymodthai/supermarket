@@ -11,7 +11,7 @@ const connection = mysql.createConnection({
 //GET
 router.get("/", (req, res) => {
   connection.query(
-    "SELECT * FROM `products` ORDER BY name ASC",
+    "SELECT * FROM `products` ORDER BY product_name ASC",
     (err, results, fields) => {
       res.json(results);
     }
@@ -33,9 +33,9 @@ router.get("/:id", (req, res) => {
 router.post("/", (req, res) => {
   console.log(req);
   connection.query(
-    "INSERT INTO `products`(`name`, `product_desc`, `cost`, `price`, `stock`, `shelf`, `supplier_id`) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    "INSERT INTO `products`(`product_name`, `product_desc`, `cost`, `price`, `stock`, `shelf`, `supplier_id`) VALUES (?, ?, ?, ?, ?, ?, ?)",
     [
-      req.body.name,
+      req.body.product_name,
       req.body.product_desc,
       req.body.cost,
       req.body.price,
@@ -53,9 +53,9 @@ router.post("/", (req, res) => {
 //UPDATE
 router.put("/", (req, res) => {
   connection.query(
-    "UPDATE `products` SET `name`= ?, `product_desc`= ?, `cost`= ?, `price`= ?, `stock`= ?, `shelf`= ?, `supplier_id`= ? WHERE product_id = ?",
+    "UPDATE `products` SET `product_name`= ?, `product_desc`= ?, `cost`= ?, `price`= ?, `stock`= ?, `shelf`= ?, `supplier_id`= ? WHERE product_id = ?",
     [
-      req.body.name,
+      req.body.product_name,
       req.body.product_desc,
       req.body.cost,
       req.body.price,

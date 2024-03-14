@@ -40,7 +40,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 function createData(
   product_id: number,
-  name: string,
+  product_name: string,
   productDesc: string,
   cost: number,
   price: number,
@@ -48,7 +48,16 @@ function createData(
   shelf: number,
   supplier: string
 ) {
-  return { product_id, name, productDesc, cost, price, stock, shelf, supplier };
+  return {
+    product_id,
+    product_name,
+    productDesc,
+    cost,
+    price,
+    stock,
+    shelf,
+    supplier,
+  };
 }
 
 export default function TableProduct(props: PropsTable) {
@@ -88,7 +97,7 @@ export default function TableProduct(props: PropsTable) {
       const i = resData.map((item: any) => {
         return createData(
           item.product_id,
-          item.name,
+          item.product_name,
           item.product_desc,
           item.cost,
           item.price,
@@ -132,9 +141,9 @@ export default function TableProduct(props: PropsTable) {
         </TableHead>
         <TableBody>
           {rowData.map((row: any) => (
-            <StyledTableRow key={row.name}>
+            <StyledTableRow key={row.product_name}>
               <StyledTableCell component="th" scope="row" align="center">
-                {row.name}
+                {row.product_name}
               </StyledTableCell>
               <StyledTableCell align="center">
                 {row.productDesc}

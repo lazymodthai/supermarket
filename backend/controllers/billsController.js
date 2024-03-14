@@ -9,52 +9,39 @@ const connection = mysql.createConnection({
 });
 
 //GET
-router.get("/", (req, res) => {
-  connection.query("SELECT * FROM `supplier`", (err, results, fields) => {
-    res.json(results);
-  });
+router.post("/", (req, res) => {
+  connection.query(
+    "SELECT * FROM `bills` WHERE `employee_id` = ? ORDER BY `date` DESC",
+    req.body.id,
+    (err, results, fields) => {
+      res.json(results);
+    }
+  );
 });
 
 router.get("/:id", (req, res) => {
   const id = req.params.id;
   connection.query(
-    "SELECT * FROM `supplier` WHERE `supplier_id` = ?",
+    "SELECT * FROM `products_bills` INNER JOIN `products` ON `products`.`product_id` = `products_bills`.`product_id` INNER JOIN `bills` ON `products_bills`.`bill_id` = `bills`.`bill_id` INNER JOIN `employee` ON `bills`.`employee_id` = `employee`.`employee_id`  WHERE `products_bills`.`bill_id` = ?",
     [id],
     (err, results) => {
-      res.json(results);
-    }
-  );
-});
-
-//CREATE
-router.post("/", (req, res) => {
-  connection.query(
-    "INSERT INTO `supplier`(`name`, `address`, `contact_name`, `tel`) VALUES (?, ?, ?, ?)",
-    [req.body.name, req.body.address, req.body.contact_name, req.body.tel],
-    (err, results) => {
-      res.json(results);
-    }
-  );
-});
-
-//UPDATE
-router.put("/", (req, res) => {
-  connection.query(
-    "UPDATE `supplier` SET `name`= ?, `address`= ?, `contact_name`= ?, `tel`= ? WHERE supplier_id = ?",
-    [req.body.name, req.body.address, req.body.contact_name, req.body.tel],
-    (err, results) => {
-      res.json(results);
-    }
-  );
-});
-
-//DELETE
-router.delete("/", (req, res) => {
-  connection.query(
-    "DELETE FROM `supplier` WHERE supplier_id = ?",
-    [req.body.id],
-    (err, results) => {
-      res.json(results);
+      const result = results.map((item) => {
+        const {
+          list_id,
+          bill_id,
+          supplier_id,
+          employee_id,
+          member_id,
+          password,
+          salary,
+          stock,
+          shelf,
+          cost,
+          ...rest
+        } = item;
+        return rest;
+      });
+      res.json([result]);
     }
   );
 });

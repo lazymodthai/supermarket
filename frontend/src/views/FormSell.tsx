@@ -3,6 +3,7 @@ import TableSell from "../components/TableSell";
 import { useEffect, useState } from "react";
 import { Autocomplete, Box, Button, TextField } from "@mui/material";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 interface PropsSell {
   employee?: any;
@@ -13,6 +14,7 @@ export default function FormSell(props: PropsSell) {
   const [id, setId] = useState<number>(0);
   const [mode, setMode] = useState<string>("");
   const [productList, setProductList] = useState<any>([]);
+  const [sum, setSum] = useState<any>(0);
   const [total, setTotal] = useState<any>(0);
   const [vat, setVat] = useState<any>(0);
   const [discount, setDiscount] = useState<any>(0);
@@ -36,12 +38,17 @@ export default function FormSell(props: PropsSell) {
   };
 
   useEffect(() => {
-    const sum = productList.reduce((accumulator: any, currentValue: any) => {
-      return accumulator + currentValue.total;
-    }, 0);
+    setSum(
+      productList.reduce((accumulator: any, currentValue: any) => {
+        return accumulator + currentValue.total;
+      }, 0)
+    );
+  }, [productList]);
+
+  useEffect(() => {
     setTotal(sum - discount);
     setVat((sum * 7) / 100);
-  }, [productList]);
+  }, [sum, discount]);
 
   useEffect(() => {
     setMem();
@@ -60,6 +67,7 @@ export default function FormSell(props: PropsSell) {
     }));
 
     const success = () => {
+      Swal.fire("ชำระเงินสำเร็จ!");
       setLoad(!load);
       setProductList([]);
       setDiscount(0);
@@ -67,19 +75,20 @@ export default function FormSell(props: PropsSell) {
       setMem();
     };
 
-    console.log(sellList);
-    await axios
-      .put(`${baseUrl}/products/sell`, [...sellList])
-      .then((response) => {
-        success();
-      })
-      .catch(handleError);
-    await axios
-      .post(`${baseUrl}/products/bill`, [...sellList])
-      .then((response) => {
-        success();
-      })
-      .catch(handleError);
+    if (sellList.length > 0) {
+      await axios
+        .put(`${baseUrl}/products/sell`, [...sellList])
+        .then(() => {
+          success();
+        })
+        .catch(handleError);
+      await axios
+        .post(`${baseUrl}/products/bill`, [...sellList])
+        .then(() => {
+          success();
+        })
+        .catch(handleError);
+    }
   };
 
   return (
@@ -118,7 +127,6 @@ export default function FormSell(props: PropsSell) {
                 ]);
               }
             }}
-            count={(val) => null}
           />
         </Grid2>
         <Grid2 xs={12} container display={"flex"} gap={2}>
@@ -164,7 +172,7 @@ export default function FormSell(props: PropsSell) {
                     setMember({ ...member, point: member.point - 500 });
                   }
                 }}
-                disabled={member.point <= 100 || discount > 0}
+                disabled={member.point <= 500 || discount > 0 || total < 50}
               >
                 ใช้ส่วนลด
               </Button>
@@ -179,6 +187,7 @@ export default function FormSell(props: PropsSell) {
             color="primary"
             // sx={buttonStyle}
             onClick={purchase}
+            disabled={productList.length < 1}
           >
             ชำระเงิน
           </Button>

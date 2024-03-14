@@ -44,7 +44,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 function createData(
   product_id: number,
-  name: string,
+  product_name: string,
   productDesc: string,
   cost: number,
   price: number,
@@ -52,7 +52,16 @@ function createData(
   shelf: number,
   supplier: string
 ) {
-  return { product_id, name, productDesc, cost, price, stock, shelf, supplier };
+  return {
+    product_id,
+    product_name,
+    productDesc,
+    cost,
+    price,
+    stock,
+    shelf,
+    supplier,
+  };
 }
 
 export default function TableSell(props: PropsTable) {
@@ -93,7 +102,7 @@ export default function TableSell(props: PropsTable) {
       const i = resData.map((item: any) => {
         return createData(
           item.product_id,
-          item.name,
+          item.product_name,
           item.product_desc,
           item.cost,
           item.price,
@@ -109,7 +118,9 @@ export default function TableSell(props: PropsTable) {
 
   useEffect(() => {
     if (filter !== "") {
-      setTableData(rowData.filter((item: any) => item.name.includes(filter)));
+      setTableData(
+        rowData.filter((item: any) => item.product_name.includes(filter))
+      );
     } else {
       setTableData(rowData);
     }
@@ -149,9 +160,9 @@ export default function TableSell(props: PropsTable) {
             </TableHead>
             <TableBody>
               {tableData.map((row: any) => (
-                <StyledTableRow key={row.name}>
+                <StyledTableRow key={row.product_name}>
                   <StyledTableCell component="th" scope="row" align="left">
-                    {row.name}
+                    {row.product_name}
                   </StyledTableCell>
                   <StyledTableCell align="center">{row.price}</StyledTableCell>
                   <StyledTableCell
@@ -170,7 +181,12 @@ export default function TableSell(props: PropsTable) {
                       onClick={() => {
                         if (row.shelf === 0) return;
                         props.id &&
-                          props.id(row.product_id, row.name, row.price, "ADD");
+                          props.id(
+                            row.product_id,
+                            row.product_name,
+                            row.price,
+                            "ADD"
+                          );
                         const newRow = rowData.map((item: any) => {
                           if (item.product_id === row.product_id) {
                             return { ...item, shelf: row.shelf - 1 };
@@ -202,7 +218,7 @@ export default function TableSell(props: PropsTable) {
                         props.id &&
                           props.id(
                             row.product_id,
-                            row.name,
+                            row.product_name,
                             row.price,
                             "REMOVE"
                           );

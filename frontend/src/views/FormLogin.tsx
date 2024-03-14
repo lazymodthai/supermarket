@@ -3,6 +3,7 @@ import InputTextField from "../components/InputTextField";
 import { useEffect, useState } from "react";
 import { WidthNormal } from "@mui/icons-material";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 interface PropsLogin {
   employee?: any;
