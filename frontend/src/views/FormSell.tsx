@@ -2,6 +2,7 @@ import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import TableSell from "../components/TableSell";
 import { useEffect, useState } from "react";
 import { Box, Button } from "@mui/material";
+import axios from "axios";
 
 interface PropsSell {}
 
@@ -12,6 +13,13 @@ export default function FormSell(props: PropsSell) {
   const [productList, setProductList] = useState<any>([]);
   const [total, setTotal] = useState<any>(0);
   const [vat, setVat] = useState<any>(0);
+  const baseUrl = "http://localhost:4900";
+  const handleError = (error: any) => {
+    console.error(
+      "Error:",
+      error.response ? error.response.data : error.message
+    );
+  };
 
   useEffect(() => {
     const sum = productList.reduce((accumulator: any, currentValue: any) => {
@@ -22,7 +30,18 @@ export default function FormSell(props: PropsSell) {
   }, [productList]);
 
   const purchase = () => {
-    console.log(productList);
+    const sellList = productList.map((item: any) => ({
+      shelf: item.qty,
+      product_id: item.id,
+    }));
+
+    axios
+      .put(`${baseUrl}/products/sell`, [...sellList])
+      .then((response) => {
+        setLoad(!load);
+        setProductList([]);
+      })
+      .catch(handleError);
   };
 
   return (
@@ -49,7 +68,6 @@ export default function FormSell(props: PropsSell) {
                         (mode === "ADD" ? item.qty + 1 : item.qty - 1),
                     };
                   } else {
-                    console.log(1);
                     return item;
                   }
                 });

@@ -11,12 +11,13 @@ export default function FormLogin() {
       display={"flex"}
       justifyContent={"center"}
       alignItems={"center"}
-      height={"90vh"}
+      height={"80vh"}
     >
       <InputTextField
         label="รหัสผ่าน"
         placeholder="ป้อนรหัสผ่าน"
         onChange={(e) => setPw(e.target.value)}
+        style={{ width: "20vw" }}
       />
     </Grid2>
   );

@@ -113,7 +113,7 @@ export default function TableSell(props: PropsTable) {
     } else {
       setTableData(rowData);
     }
-  }, [filter, rowData]);
+  }, [filter, rowData, props.load]);
 
   return (
     <Grid2 container gap={2} xs={12}>

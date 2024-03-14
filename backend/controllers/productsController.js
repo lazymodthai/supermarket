@@ -10,9 +10,12 @@ const connection = mysql.createConnection({
 
 //GET
 router.get("/", (req, res) => {
-  connection.query("SELECT * FROM `products`", (err, results, fields) => {
-    res.json(results);
-  });
+  connection.query(
+    "SELECT * FROM `products` ORDER BY name ASC",
+    (err, results, fields) => {
+      res.json(results);
+    }
+  );
 });
 
 router.get("/:id", (req, res) => {
@@ -65,6 +68,32 @@ router.put("/", (req, res) => {
       res.json(results);
     }
   );
+});
+
+router.put("/sell", (req, res) => {
+  const promises = req.body.map((item) => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        "UPDATE `products` SET `shelf` = `shelf` - ? WHERE `product_id` = ?",
+        [item.shelf, item.product_id],
+        (err, results) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(results);
+          }
+        }
+      );
+    });
+  });
+
+  Promise.all(promises)
+    .then((results) => {
+      res.json(results);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
 });
 
 //DELETE
