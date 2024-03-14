@@ -12,6 +12,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import QueueIcon from "@mui/icons-material/Queue";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
+import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
+import InputTextField from "./InputTextField";
 const baseUrl = "http://localhost:4900";
 
 interface PropsTable {
@@ -57,6 +59,8 @@ export default function TableSell(props: PropsTable) {
   const [resData, setResData] = useState<any>([]);
   const [supplier, setSupplier] = useState<any>([]);
   const [rowData, setRowData] = useState<any>([]);
+  const [filter, setFilter] = useState<string>("");
+  const [tableData, setTableData] = useState<any>([]);
 
   const handleError = (error: any) => {
     console.error(
@@ -103,106 +107,122 @@ export default function TableSell(props: PropsTable) {
     }
   }, [resData]);
 
-  const handleRemove = (id: number) => {
-    if (id) {
-      axios
-        .delete(`${baseUrl}/products/${id}`)
-        .then((response) => {
-          console.log(`Deleted ${response.data}`);
-          loadData();
-        })
-        .catch(handleError);
+  useEffect(() => {
+    if (filter !== "") {
+      setTableData(rowData.filter((item: any) => item.name.includes(filter)));
+    } else {
+      setTableData(rowData);
     }
-  };
+  }, [filter, rowData]);
 
   return (
-    <TableContainer component={Paper} sx={{ maxHeight: 440 }}>
-      <Table sx={{ minWidth: 700 }} aria-label="customized table" stickyHeader>
-        <TableHead>
-          <TableRow>
-            <StyledTableCell align="left" sx={{ paddingLeft: "16px" }}>
-              ชื่อสินค้า
-            </StyledTableCell>
-            <StyledTableCell align="center" width={"80px"}>
-              ราคา
-            </StyledTableCell>
-            <StyledTableCell align="center" width={"80px"}>
-              มีอยู่
-            </StyledTableCell>
-            <StyledTableCell align="center" width={"80px"}>
-              ตะกร้า
-            </StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rowData.map((row: any) => (
-            <StyledTableRow key={row.name}>
-              <StyledTableCell component="th" scope="row" align="left">
-                {row.name}
-              </StyledTableCell>
-              <StyledTableCell align="center">{row.price}</StyledTableCell>
-              <StyledTableCell
-                align="center"
-                sx={{ color: row.shelf === 0 ? "red" : "" }}
-              >
-                {row.shelf === 0 ? "หมด" : row.shelf}
-              </StyledTableCell>
-              <StyledTableCell align="center">
-                <QueueIcon
-                  sx={{
-                    color: row.shelf === 0 ? "gray" : "#009060",
-                    cursor: "pointer",
-                    marginRight: "10px",
-                  }}
-                  onClick={() => {
-                    if (row.shelf === 0) return;
-                    props.id &&
-                      props.id(row.product_id, row.name, row.price, "ADD");
-                    const newRow = rowData.map((item: any) => {
-                      if (item.product_id === row.product_id) {
-                        return { ...item, shelf: row.shelf - 1 };
-                      } else {
-                        return item;
-                      }
-                    });
+    <Grid2 container gap={2} xs={12}>
+      <Grid2 xs={12}>
+        <InputTextField
+          label="ค้นหาสินค้า"
+          placeholder="ค้นหาด้วยชื่อสินค้า"
+          onChange={(e) => setFilter(e.target.value)}
+        />
+      </Grid2>
+      <Grid2 xs={12}>
+        <TableContainer component={Paper} sx={{ height: 400 }}>
+          <Table
+            sx={{ minWidth: 600 }}
+            aria-label="customized table"
+            stickyHeader
+          >
+            <TableHead>
+              <TableRow>
+                <StyledTableCell align="left" sx={{ paddingLeft: "16px" }}>
+                  ชื่อสินค้า
+                </StyledTableCell>
+                <StyledTableCell align="center" width={"80px"}>
+                  ราคา
+                </StyledTableCell>
+                <StyledTableCell align="center" width={"80px"}>
+                  มีอยู่
+                </StyledTableCell>
+                <StyledTableCell align="center" width={"80px"}>
+                  ตะกร้า
+                </StyledTableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {tableData.map((row: any) => (
+                <StyledTableRow key={row.name}>
+                  <StyledTableCell component="th" scope="row" align="left">
+                    {row.name}
+                  </StyledTableCell>
+                  <StyledTableCell align="center">{row.price}</StyledTableCell>
+                  <StyledTableCell
+                    align="center"
+                    sx={{ color: row.shelf === 0 ? "red" : "" }}
+                  >
+                    {row.shelf === 0 ? "หมด" : row.shelf}
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    <QueueIcon
+                      sx={{
+                        color: row.shelf === 0 ? "gray" : "#009060",
+                        cursor: "pointer",
+                        marginRight: "10px",
+                      }}
+                      onClick={() => {
+                        if (row.shelf === 0) return;
+                        props.id &&
+                          props.id(row.product_id, row.name, row.price, "ADD");
+                        const newRow = rowData.map((item: any) => {
+                          if (item.product_id === row.product_id) {
+                            return { ...item, shelf: row.shelf - 1 };
+                          } else {
+                            return item;
+                          }
+                        });
 
-                    setRowData(newRow);
-                  }}
-                />
-                <RemoveCircleIcon
-                  sx={{
-                    color:
-                      resData.find(
-                        (item: any) => item.product_id === row.product_id
-                      )?.shelf <= row.shelf
-                        ? "gray"
-                        : "#DF5454",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => {
-                    if (
-                      resData.find(
-                        (item: any) => item.product_id === row.product_id
-                      )?.shelf <= row.shelf
-                    )
-                      return;
-                    props.id &&
-                      props.id(row.product_id, row.name, row.price, "REMOVE");
-                    const newRow = rowData.map((item: any) => {
-                      if (item.product_id === row.product_id) {
-                        return { ...item, shelf: row.shelf + 1 };
-                      } else {
-                        return item;
-                      }
-                    });
-                    setRowData(newRow);
-                  }}
-                />
-              </StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+                        setRowData(newRow);
+                      }}
+                    />
+                    <RemoveCircleIcon
+                      sx={{
+                        color:
+                          resData.find(
+                            (item: any) => item.product_id === row.product_id
+                          )?.shelf <= row.shelf
+                            ? "gray"
+                            : "#DF5454",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => {
+                        if (
+                          resData.find(
+                            (item: any) => item.product_id === row.product_id
+                          )?.shelf <= row.shelf
+                        )
+                          return;
+                        props.id &&
+                          props.id(
+                            row.product_id,
+                            row.name,
+                            row.price,
+                            "REMOVE"
+                          );
+                        const newRow = rowData.map((item: any) => {
+                          if (item.product_id === row.product_id) {
+                            return { ...item, shelf: row.shelf + 1 };
+                          } else {
+                            return item;
+                          }
+                        });
+                        setRowData(newRow);
+                      }}
+                    />
+                  </StyledTableCell>
+                </StyledTableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Grid2>
+    </Grid2>
   );
 }

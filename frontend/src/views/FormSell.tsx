@@ -1,7 +1,7 @@
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import TableSell from "../components/TableSell";
 import { useEffect, useState } from "react";
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
 
 interface PropsSell {}
 
@@ -14,7 +14,6 @@ export default function FormSell(props: PropsSell) {
   const [vat, setVat] = useState<any>(0);
 
   useEffect(() => {
-    console.log(productList);
     const sum = productList.reduce((accumulator: any, currentValue: any) => {
       return accumulator + currentValue.total;
     }, 0);
@@ -22,38 +21,62 @@ export default function FormSell(props: PropsSell) {
     setVat((sum * 7) / 100);
   }, [productList]);
 
+  const purchase = () => {
+    console.log(productList);
+  };
+
   return (
     <Grid2 xs={12} container gap={4}>
-      <Grid2 xs={7}>
-        <TableSell
-          load={load}
-          id={(id, name, price, mode) => {
-            if (productList.some((item: any) => item.id === id)) {
-              const res = productList.map((item: any) => {
-                if (item.id === id) {
-                  return {
-                    ...item,
-                    qty: mode === "ADD" ? item.qty + 1 : item.qty - 1,
-                    total:
-                      item.price *
-                      (mode === "ADD" ? item.qty + 1 : item.qty - 1),
-                  };
-                } else {
-                  console.log(1);
-                  return item;
-                }
-              });
-              const res2 = res.filter((item: any) => item.qty !== 0);
-              setProductList(res2);
-            } else {
-              setProductList([
-                ...productList,
-                { id: id, name: name, price: price, qty: 1, total: price },
-              ]);
-            }
-          }}
-          count={(val) => null}
-        />
+      <Grid2
+        xs={7}
+        container
+        display={"flex"}
+        justifyContent={"space-between"}
+        gap={2}
+      >
+        <Grid2 xs={12}>
+          <TableSell
+            load={load}
+            id={(id, name, price, mode) => {
+              if (productList.some((item: any) => item.id === id)) {
+                const res = productList.map((item: any) => {
+                  if (item.id === id) {
+                    return {
+                      ...item,
+                      qty: mode === "ADD" ? item.qty + 1 : item.qty - 1,
+                      total:
+                        item.price *
+                        (mode === "ADD" ? item.qty + 1 : item.qty - 1),
+                    };
+                  } else {
+                    console.log(1);
+                    return item;
+                  }
+                });
+                const res2 = res.filter((item: any) => item.qty !== 0);
+                setProductList(res2);
+              } else {
+                setProductList([
+                  ...productList,
+                  { id: id, name: name, price: price, qty: 1, total: price },
+                ]);
+              }
+            }}
+            count={(val) => null}
+          />
+        </Grid2>
+        <Grid2 xs={12}>
+          <Button
+            variant="contained"
+            fullWidth
+            size="large"
+            color="primary"
+            // sx={buttonStyle}
+            onClick={purchase}
+          >
+            ชำระเงิน
+          </Button>
+        </Grid2>
       </Grid2>
       <Grid2 xs={4} container display={"flex"} flexDirection={"column"} gap={2}>
         <Grid2 minHeight={"80vh"}>

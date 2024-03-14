@@ -6,6 +6,8 @@ interface InputProps {
   value?: any;
   type?: "text" | "number";
   required?: boolean;
+  placeholder?: string;
+  style?: any;
 }
 
 export default function InputTextField(props: InputProps) {
@@ -22,6 +24,8 @@ export default function InputTextField(props: InputProps) {
           fontFamily: "Pridi",
         },
       }}
+      style={{ ...props.style }}
+      placeholder={props.placeholder}
       required={props.required}
     />
   );

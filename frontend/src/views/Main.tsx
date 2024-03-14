@@ -8,6 +8,7 @@ import FormSupplier from "./FormSupplier";
 import FormEmployee from "./FormEmployee";
 import FormMember from "./FormMember";
 import FormSell from "./FormSell";
+import FormLogin from "./FormLogin";
 
 export default function Main() {
   const buttonStyle = {
@@ -106,7 +107,7 @@ export default function Main() {
           padding={"24px 0 24px 24px"}
           boxShadow={"11px 9px 10px -9px rgba(0,0,0,0.32)"}
         >
-          {menu === 0 && "1"}
+          {menu === 0 && <FormLogin />}
           {menu === 1 && <FormProduct />}
           {menu === 2 && <FormSupplier />}
           {menu === 3 && <FormEmployee />}
