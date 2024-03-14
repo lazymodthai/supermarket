@@ -3,7 +3,7 @@ import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 
 // Form
 import FormProduct from "./FormProduct";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FormSupplier from "./FormSupplier";
 import FormEmployee from "./FormEmployee";
 import FormMember from "./FormMember";
@@ -18,6 +18,12 @@ export default function Main() {
     fontFamily: "Pridi",
   };
   const [menu, setMenu] = useState<number>(0);
+  const [employee, setEmployee] = useState<string>("");
+  useEffect(() => {
+    const employee = localStorage.getItem("employee");
+    if (employee) setEmployee(employee);
+  }, []);
+
   return (
     <>
       <Grid2 container xs={13}>

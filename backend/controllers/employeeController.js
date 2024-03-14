@@ -26,6 +26,17 @@ router.get("/:id", (req, res) => {
   );
 });
 
+router.post("/login", (req, res) => {
+  console.log(req);
+  connection.query(
+    "SELECT * FROM `employee` WHERE `password` = ?",
+    [req.body.password],
+    (err, results, fields) => {
+      res.json(results);
+    }
+  );
+});
+
 //CREATE
 router.post("/", (req, res) => {
   connection.query(

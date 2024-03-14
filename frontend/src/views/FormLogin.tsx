@@ -1,10 +1,25 @@
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import InputTextField from "../components/InputTextField";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { WidthNormal } from "@mui/icons-material";
+import axios from "axios";
 
 export default function FormLogin() {
   const [pw, setPw] = useState<any>("");
+  const [err, setErr] = useState<any>("");
+  const baseUrl = "http://localhost:4900";
+  useEffect(() => {
+    if (String(pw).length === 4) {
+      axios
+        .post(`${baseUrl}/employee/login`, { password: pw })
+        .then((response) => {
+          localStorage.setItem("employee", response.data[0].name);
+        })
+        .catch(() => setErr("รหัสผ่านผิด"));
+    } else {
+      setErr("");
+    }
+  }, [pw]);
   return (
     <Grid2
       container
@@ -14,10 +29,13 @@ export default function FormLogin() {
       height={"80vh"}
     >
       <InputTextField
+        type={"password"}
         label="รหัสผ่าน"
         placeholder="ป้อนรหัสผ่าน"
         onChange={(e) => setPw(e.target.value)}
         style={{ width: "20vw" }}
+        maxLength={4}
+        helperText={err}
       />
     </Grid2>
   );

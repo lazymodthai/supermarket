@@ -4,10 +4,12 @@ interface InputProps {
   onChange: (e: any) => void;
   label: string;
   value?: any;
-  type?: "text" | "number";
+  type?: "password" | "text" | "number";
   required?: boolean;
   placeholder?: string;
   style?: any;
+  helperText?: any;
+  maxLength?: any;
 }
 
 export default function InputTextField(props: InputProps) {
@@ -24,9 +26,11 @@ export default function InputTextField(props: InputProps) {
           fontFamily: "Pridi",
         },
       }}
+      inputProps={{ maxLength: props.maxLength }}
       style={{ ...props.style }}
       placeholder={props.placeholder}
       required={props.required}
+      helperText={props.helperText}
     />
   );
 }
