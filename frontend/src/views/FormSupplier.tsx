@@ -6,21 +6,22 @@ import Typo from "../components/Typo";
 import TableSupplier from "../components/TableSupplier";
 import axios from "axios";
 
-interface formData {
-  name: string;
-  address: string;
-  contact_name: string;
-  tel: string;
+interface FormSupplier {
+  name?: string;
+  address?: string;
+  contact_name?: string;
+  tel?: string;
+  employee?: any;
 }
 
-export default function FormSupplier() {
+export default function FormSupplier(props: FormSupplier) {
   const formInit = {
     name: "",
     address: "",
     contact_name: "",
     tel: "",
   };
-  const [formData, setFormData] = useState<formData>(formInit);
+  const [formData, setFormData] = useState<FormSupplier>(formInit);
   const [supplier, setSupplier] = useState<any>([]);
   const [load, setLoad] = useState<boolean>(false);
   const [id, setId] = useState<number>(0);

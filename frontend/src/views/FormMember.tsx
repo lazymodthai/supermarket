@@ -6,19 +6,20 @@ import Typo from "../components/Typo";
 import TableMember from "../components/TableMember";
 import axios from "axios";
 
-interface formData {
-  name: string;
-  tel: string;
-  point: number;
+interface FormMember {
+  name?: string;
+  tel?: string;
+  point?: number;
+  employee?: any;
 }
 
-export default function FormMember() {
+export default function FormMember(props: FormMember) {
   const formInit = {
     name: "",
     tel: "",
     point: 0,
   };
-  const [formData, setFormData] = useState<formData>(formInit);
+  const [formData, setFormData] = useState<FormMember>(formInit);
   const [member, setMember] = useState<any>([]);
   const [load, setLoad] = useState<boolean>(false);
   const [id, setId] = useState<number>(0);

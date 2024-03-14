@@ -4,7 +4,11 @@ import { useEffect, useState } from "react";
 import { WidthNormal } from "@mui/icons-material";
 import axios from "axios";
 
-export default function FormLogin() {
+interface PropsLogin {
+  employee?: any;
+}
+
+export default function FormLogin(props: PropsLogin) {
   const [pw, setPw] = useState<any>("");
   const [err, setErr] = useState<any>("");
   const baseUrl = "http://localhost:4900";
@@ -14,6 +18,7 @@ export default function FormLogin() {
         .post(`${baseUrl}/employee/login`, { password: pw })
         .then((response) => {
           localStorage.setItem("employee", response.data[0].name);
+          window.location.reload();
         })
         .catch(() => setErr("รหัสผ่านผิด"));
     } else {

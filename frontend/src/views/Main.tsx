@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Box, Button, Link } from "@mui/material";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 
 // Form
@@ -9,6 +9,7 @@ import FormEmployee from "./FormEmployee";
 import FormMember from "./FormMember";
 import FormSell from "./FormSell";
 import FormLogin from "./FormLogin";
+import Typo from "../components/Typo";
 
 export default function Main() {
   const buttonStyle = {
@@ -18,11 +19,16 @@ export default function Main() {
     fontFamily: "Pridi",
   };
   const [menu, setMenu] = useState<number>(0);
-  const [employee, setEmployee] = useState<string>("");
+  const [employee, setEmployee] = useState<any>("");
+
   useEffect(() => {
     const employee = localStorage.getItem("employee");
     if (employee) setEmployee(employee);
-  }, []);
+  });
+
+  useEffect(() => {
+    employee ? setMenu(6) : setMenu(0);
+  }, [employee]);
 
   return (
     <>
@@ -47,6 +53,7 @@ export default function Main() {
               color="primary"
               sx={buttonStyle}
               onClick={() => setMenu(1)}
+              disabled={!employee}
             >
               สินค้า
             </Button>
@@ -57,6 +64,7 @@ export default function Main() {
               color="primary"
               sx={buttonStyle}
               onClick={() => setMenu(2)}
+              disabled={!employee}
             >
               ซัพพลายเออร์
             </Button>
@@ -67,6 +75,7 @@ export default function Main() {
               color="primary"
               sx={buttonStyle}
               onClick={() => setMenu(3)}
+              disabled={!employee}
             >
               พนักงาน
             </Button>
@@ -77,6 +86,7 @@ export default function Main() {
               color="primary"
               sx={buttonStyle}
               onClick={() => setMenu(4)}
+              disabled={!employee}
             >
               สมาชิก
             </Button>
@@ -89,6 +99,7 @@ export default function Main() {
               color="warning"
               sx={buttonStyle}
               onClick={() => setMenu(5)}
+              disabled={!employee}
             >
               ดูยอดขาย
             </Button>
@@ -99,9 +110,25 @@ export default function Main() {
               color="success"
               sx={buttonStyle}
               onClick={() => setMenu(6)}
+              disabled={!employee}
             >
               ขายสินค้า
             </Button>
+            <Box sx={{ color: "black", display: "flex", gap: 2 }}>
+              {`พนักงาน: ${employee || "โปรดเข้าสู่ระบบ"}`}
+              {employee ? (
+                <Link
+                  onClick={() => {
+                    localStorage.removeItem("employee");
+                    setEmployee("");
+                  }}
+                >
+                  ออกจากระบบ
+                </Link>
+              ) : (
+                ""
+              )}
+            </Box>
           </Grid2>
         </Grid2>
         <Grid2
@@ -113,12 +140,12 @@ export default function Main() {
           padding={"24px 0 24px 24px"}
           boxShadow={"11px 9px 10px -9px rgba(0,0,0,0.32)"}
         >
-          {menu === 0 && <FormLogin />}
-          {menu === 1 && <FormProduct />}
-          {menu === 2 && <FormSupplier />}
-          {menu === 3 && <FormEmployee />}
-          {menu === 4 && <FormMember />}
-          {menu === 6 && <FormSell />}
+          {menu === 0 && <FormLogin employee={employee} />}
+          {menu === 1 && <FormProduct employee={employee} />}
+          {menu === 2 && <FormSupplier employee={employee} />}
+          {menu === 3 && <FormEmployee employee={employee} />}
+          {menu === 4 && <FormMember employee={employee} />}
+          {menu === 6 && <FormSell employee={employee} />}
         </Grid2>
       </Grid2>
     </>

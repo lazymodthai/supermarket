@@ -6,18 +6,19 @@ import Typo from "../components/Typo";
 import TableProduct from "../components/TableProduct";
 import axios from "axios";
 
-interface formData {
-  name: string;
-  product_desc: string;
-  quantity: number;
-  cost: number;
-  price: number;
-  stock: number;
-  shelf: number;
-  supplier_id: number;
+interface FormProduct {
+  name?: string;
+  product_desc?: string;
+  quantity?: number;
+  cost?: number;
+  price?: number;
+  stock?: number;
+  shelf?: number;
+  supplier_id?: number;
+  employee?: any;
 }
 
-export default function FormProduct() {
+export default function FormProduct(props: FormProduct) {
   const formInit = {
     name: "",
     product_desc: "",
@@ -28,7 +29,7 @@ export default function FormProduct() {
     shelf: 0,
     supplier_id: 0,
   };
-  const [formData, setFormData] = useState<formData>(formInit);
+  const [formData, setFormData] = useState<FormProduct>(formInit);
   const [supplier, setSupplier] = useState<any>([]);
   const [load, setLoad] = useState<boolean>(false);
   const [id, setId] = useState<number>(0);

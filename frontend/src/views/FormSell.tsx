@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import { Box, Button } from "@mui/material";
 import axios from "axios";
 
-interface PropsSell {}
+interface PropsSell {
+  employee?: any;
+}
 
 export default function FormSell(props: PropsSell) {
   const [load, setLoad] = useState<boolean>(false);

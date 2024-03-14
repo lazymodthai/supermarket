@@ -6,21 +6,22 @@ import Typo from "../components/Typo";
 import TableEmployee from "../components/TableEmployee";
 import axios from "axios";
 
-interface formData {
-  name: string;
-  address: string;
-  tel: string;
-  salary: number;
+interface FormEmployee {
+  name?: string;
+  address?: string;
+  tel?: string;
+  salary?: number;
+  employee?: any;
 }
 
-export default function FormEmployee() {
+export default function FormEmployee(props: FormEmployee) {
   const formInit = {
     name: "",
     address: "",
     tel: "",
     salary: 0,
   };
-  const [formData, setFormData] = useState<formData>(formInit);
+  const [formData, setFormData] = useState<FormEmployee>(formInit);
   const [employee, setEmployee] = useState<any>([]);
   const [load, setLoad] = useState<boolean>(false);
   const [id, setId] = useState<number>(0);
