@@ -61,7 +61,7 @@ export default function FormSell(props: PropsSell) {
       employee_id: props.employee.employee_id,
       member_id: member.member_id,
       point: member.point,
-      date: Date.now(),
+      // date: Date.now(),
       discount: discount,
       total_summary: total,
     }));
@@ -158,7 +158,11 @@ export default function FormSell(props: PropsSell) {
             width={"100%"}
           >
             <Grid2 xs={6}>
-              {`แต้มสมาชิก: ${Number(member.point || 0).toLocaleString()} แต้ม`}
+              {`แต้มสมาชิก: ${Number(
+                member.point || 0
+              ).toLocaleString()} แต้ม , แต้มที่จะได้รับ ${parseInt(
+                String(total / 20 || 0)
+              ).toLocaleString()} แต้ม`}
             </Grid2>
             <Grid2 xs={6}>
               <Button

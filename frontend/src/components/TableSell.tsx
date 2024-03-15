@@ -138,7 +138,7 @@ export default function TableSell(props: PropsTable) {
       <Grid2 xs={12}>
         <TableContainer component={Paper} sx={{ height: 400 }}>
           <Table
-            sx={{ minWidth: 600 }}
+            sx={{ minWidth: 400 }}
             aria-label="customized table"
             stickyHeader
           >

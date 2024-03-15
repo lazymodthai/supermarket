@@ -82,7 +82,7 @@ export default function TableBill(props: PropsTable) {
 
   return (
     <TableContainer component={Paper} sx={{ maxHeight: 440 }}>
-      <Table sx={{ minWidth: 700 }} aria-label="customized table" stickyHeader>
+      <Table sx={{ minWidth: 400 }} aria-label="customized table" stickyHeader>
         <TableHead>
           <TableRow>
             <StyledTableCell align="left">วันที่/เวลา</StyledTableCell>
