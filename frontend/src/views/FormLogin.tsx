@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { WidthNormal } from "@mui/icons-material";
 import axios from "axios";
 import Swal from "sweetalert2";
+import CryptoJS from "crypto-js";
 
 interface PropsLogin {
   employee?: any;
@@ -14,7 +15,7 @@ export default function FormLogin(props: PropsLogin) {
   const [err, setErr] = useState<any>("");
   const baseUrl = "http://localhost:4900";
   useEffect(() => {
-    if (String(pw).length === 4) {
+    if (String(pw).length === 6) {
       axios
         .post(`${baseUrl}/employee/login`, { password: pw })
         .then((response) => {
@@ -27,6 +28,7 @@ export default function FormLogin(props: PropsLogin) {
       setErr("");
     }
   }, [pw]);
+
   return (
     <Grid2
       container
@@ -41,7 +43,7 @@ export default function FormLogin(props: PropsLogin) {
         placeholder="ป้อนรหัสผ่าน"
         onChange={(e) => setPw(e.target.value)}
         style={{ width: "20vw" }}
-        maxLength={4}
+        maxLength={6}
         helperText={err}
       />
     </Grid2>
