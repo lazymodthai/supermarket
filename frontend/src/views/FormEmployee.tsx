@@ -12,6 +12,7 @@ interface FormEmployee {
   tel?: string;
   salary?: number;
   employee?: any;
+  password?: any;
 }
 
 export default function FormEmployee(props: FormEmployee) {
@@ -20,6 +21,7 @@ export default function FormEmployee(props: FormEmployee) {
     address: "",
     tel: "",
     salary: 0,
+    password: "",
   };
   const [formData, setFormData] = useState<FormEmployee>(formInit);
   const [employee, setEmployee] = useState<any>([]);
@@ -131,6 +133,16 @@ export default function FormEmployee(props: FormEmployee) {
                 setFormData({ ...formData, salary: e.target.value })
               }
               required
+            />
+            <InputTextField
+              type={"password"}
+              label={"รหัสผ่าน"}
+              value={formData.password || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
+              required
+              maxLength={4}
             />
             <Button
               variant="contained"

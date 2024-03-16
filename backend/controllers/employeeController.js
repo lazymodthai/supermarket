@@ -40,8 +40,14 @@ router.post("/login", (req, res) => {
 //CREATE
 router.post("/", (req, res) => {
   connection.query(
-    "INSERT INTO `employee`(`name`, `tel`, `address`,`salary`) VALUES (?, ?, ?, ?)",
-    [req.body.name, req.body.tel, req.body.addres, req.body.salary],
+    "INSERT INTO `employee`(`name`, `tel`, `address`,`salary`,`password`) VALUES (?, ?, ?, ?, ?)",
+    [
+      req.body.name,
+      req.body.tel,
+      req.body.address,
+      req.body.salary,
+      req.body.password,
+    ],
     (err, results) => {
       res.json(results);
     }
@@ -51,12 +57,13 @@ router.post("/", (req, res) => {
 //UPDATE
 router.put("/", (req, res) => {
   connection.query(
-    "UPDATE `employee` SET `name`= ?, `tel`= ?, `address`= ?, `salary`= ? WHERE employee_id = ?",
+    "UPDATE `employee` SET `name`= ?, `tel`= ?, `address`= ?, `salary`= ?, `password`= ? WHERE employee_id = ?",
     [
       req.body.name,
       req.body.tel,
       req.body.address,
       req.body.salary,
+      req.body.password,
       req.body.employee_id,
     ],
     (err, results) => {

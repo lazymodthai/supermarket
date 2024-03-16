@@ -61,7 +61,6 @@ export default function FormSell(props: PropsSell) {
       employee_id: props.employee.employee_id,
       member_id: member.member_id,
       point: member.point,
-      // date: Date.now(),
       discount: discount,
       total_summary: total,
     }));
@@ -75,19 +74,19 @@ export default function FormSell(props: PropsSell) {
       setMem();
     };
 
-    if (sellList.length > 0) {
-      await axios
-        .put(`${baseUrl}/products/sell`, [...sellList])
-        .then(() => {
-          success();
-        })
-        .catch(handleError);
-      await axios
-        .post(`${baseUrl}/products/bill`, [...sellList])
-        .then(() => {
-          success();
-        })
-        .catch(handleError);
+    try {
+      if (sellList.length > 0) {
+        await axios.put(`${baseUrl}/products/sell`, sellList);
+        await axios.post(`${baseUrl}/products/bill`, sellList);
+        const pointToUpdate = total / 20;
+        await axios.put(`${baseUrl}/members/point`, {
+          member_id: member.member_id,
+          point: pointToUpdate,
+        });
+        success();
+      }
+    } catch (error) {
+      handleError(error);
     }
   };
 

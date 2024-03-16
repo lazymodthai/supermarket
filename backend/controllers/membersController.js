@@ -49,7 +49,16 @@ router.put("/", (req, res) => {
   );
 });
 
-//DELETE
+router.put("/point", (req, res) => {
+  connection.query(
+    "UPDATE `members` SET `point`= `point` + ? WHERE member_id = ?",
+    [req.body.point, req.body.member_id],
+    (err, results) => {
+      res.json(results);
+    }
+  );
+});
+
 //DELETE
 router.delete("/:id", (req, res) => {
   const id = req.params.id;
