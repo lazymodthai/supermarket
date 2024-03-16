@@ -173,7 +173,7 @@ export default function FormEmployee(props: FormEmployee) {
                 (formData.password === "" || formData.password.length < 6)
               }
               helperText={
-                formData.password.length < 6 ? "ต้องมี 6 ตัวอักษร" : ""
+                err && formData.password.length < 6 ? "ต้องมี 6 ตัวอักษร" : ""
               }
               maxLength={6}
             />
