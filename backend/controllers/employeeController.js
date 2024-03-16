@@ -26,6 +26,7 @@ router.get("/:id", (req, res) => {
   );
 });
 
+//CREATE
 router.post("/login", (req, res) => {
   console.log(req);
   connection.query(
@@ -37,7 +38,6 @@ router.post("/login", (req, res) => {
   );
 });
 
-//CREATE
 router.post("/", (req, res) => {
   connection.query(
     "INSERT INTO `employee`(`name`, `tel`, `address`,`salary`,`password`) VALUES (?, ?, ?, ?, ?)",

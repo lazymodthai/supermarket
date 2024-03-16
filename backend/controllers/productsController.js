@@ -50,6 +50,39 @@ router.post("/", (req, res) => {
   );
 });
 
+router.post("/bill", (req, res) => {
+  connection.query("SELECT LAST_INSERT_ID()", (err, rows) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    const lastId = rows[0]["LAST_INSERT_ID()"];
+    const promises = req.body.map((item) => {
+      return new Promise((resolve, reject) => {
+        connection.query(
+          `INSERT INTO products_bills (bill_id, product_id, quantity) VALUES (?, ?, ?)`,
+          [lastId, item.product_id, item.shelf],
+          (err, results) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(results);
+            }
+          }
+        );
+      });
+    });
+
+    Promise.all(promises)
+      .then((results) => {
+        res.json(results);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  });
+});
+
 //UPDATE
 router.put("/", (req, res) => {
   connection.query(
@@ -119,39 +152,6 @@ router.put("/sell", (req, res) => {
         );
       }
     })
-      .then((results) => {
-        res.json(results);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  });
-});
-
-router.post("/bill", (req, res) => {
-  connection.query("SELECT LAST_INSERT_ID()", (err, rows) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    const lastId = rows[0]["LAST_INSERT_ID()"];
-    const promises = req.body.map((item) => {
-      return new Promise((resolve, reject) => {
-        connection.query(
-          `INSERT INTO products_bills (bill_id, product_id, quantity) VALUES (?, ?, ?)`,
-          [lastId, item.product_id, item.shelf],
-          (err, results) => {
-            if (err) {
-              reject(err);
-            } else {
-              resolve(results);
-            }
-          }
-        );
-      });
-    });
-
-    Promise.all(promises)
       .then((results) => {
         res.json(results);
       })

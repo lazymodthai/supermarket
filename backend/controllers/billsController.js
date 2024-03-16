@@ -8,7 +8,7 @@ const connection = mysql.createConnection({
   database: "supermarket",
 });
 
-//GET
+//CREATE
 router.post("/", (req, res) => {
   connection.query(
     "SELECT * FROM `bills` WHERE `employee_id` = ? ORDER BY `date` DESC",
@@ -19,6 +19,7 @@ router.post("/", (req, res) => {
   );
 });
 
+//GET
 router.get("/:id", (req, res) => {
   const id = req.params.id;
   connection.query(
