@@ -52,7 +52,7 @@ router.put("/", (req, res) => {
 router.put("/point", (req, res) => {
   connection.query(
     "UPDATE `members` SET `point`= `point` + ? WHERE member_id = ?",
-    [req.body.point, req.body.member_id],
+    [parseInt(req.body.point), req.body.member_id],
     (err, results) => {
       res.json(results);
     }
