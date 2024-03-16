@@ -10,6 +10,7 @@ interface InputProps {
   style?: any;
   helperText?: any;
   maxLength?: any;
+  error?: boolean;
 }
 
 export default function InputTextField(props: InputProps) {
@@ -31,6 +32,7 @@ export default function InputTextField(props: InputProps) {
       placeholder={props.placeholder}
       required={props.required}
       helperText={props.helperText}
+      error={props.error}
     />
   );
 }

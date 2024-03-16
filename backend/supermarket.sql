@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 16, 2024 at 02:41 PM
+-- Generation Time: Mar 16, 2024 at 05:31 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 SET
@@ -34,8 +34,8 @@ CREATE TABLE
     `bill_id` int (10) NOT NULL,
     `date` datetime NOT NULL DEFAULT current_timestamp(),
     `discount` float NOT NULL DEFAULT 0,
-    `total_summary` float NOT NULL,
-    `employee_id` int (10) NOT NULL,
+    `total_summary` float NOT NULL DEFAULT 0,
+    `employee_id` int (10) DEFAULT NULL,
     `member_id` int (10) DEFAULT NULL
   ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
@@ -46,11 +46,11 @@ CREATE TABLE
 CREATE TABLE
   `employee` (
     `employee_id` int (10) NOT NULL,
-    `name` varchar(50) NOT NULL,
-    `address` varchar(200) NOT NULL,
-    `tel` varchar(10) NOT NULL,
-    `salary` float NOT NULL,
-    `password` varchar(4) NOT NULL
+    `name` varchar(50) DEFAULT NULL,
+    `address` varchar(200) DEFAULT NULL,
+    `tel` varchar(10) DEFAULT NULL,
+    `salary` float NOT NULL DEFAULT 0,
+    `password` varchar(256) NOT NULL
   ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -60,8 +60,8 @@ CREATE TABLE
 CREATE TABLE
   `members` (
     `member_id` int (10) NOT NULL,
-    `name` varchar(50) NOT NULL,
-    `tel` varchar(10) NOT NULL,
+    `name` varchar(50) DEFAULT NULL,
+    `tel` varchar(10) DEFAULT NULL,
     `point` int (7) NOT NULL DEFAULT 0
   ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
@@ -72,13 +72,13 @@ CREATE TABLE
 CREATE TABLE
   `products` (
     `product_id` int (10) NOT NULL,
-    `product_name` varchar(50) NOT NULL,
-    `product_desc` text NOT NULL,
-    `cost` float NOT NULL,
-    `price` float NOT NULL,
-    `stock` int (4) NOT NULL,
-    `shelf` int (4) NOT NULL,
-    `supplier_id` int (10) NOT NULL
+    `product_name` varchar(50) DEFAULT NULL,
+    `product_desc` text DEFAULT NULL,
+    `cost` float NOT NULL DEFAULT 0,
+    `price` float NOT NULL DEFAULT 0,
+    `stock` int (4) NOT NULL DEFAULT 0,
+    `shelf` int (4) NOT NULL DEFAULT 0,
+    `supplier_id` int (10) DEFAULT NULL
   ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -100,10 +100,10 @@ CREATE TABLE
 CREATE TABLE
   `supplier` (
     `supplier_id` int (10) NOT NULL,
-    `name` varchar(50) NOT NULL,
-    `address` varchar(200) NOT NULL,
-    `contact_name` varchar(50) NOT NULL,
-    `tel` varchar(10) NOT NULL
+    `name` varchar(50) DEFAULT NULL,
+    `address` varchar(200) DEFAULT NULL,
+    `contact_name` varchar(50) DEFAULT NULL,
+    `tel` varchar(10) DEFAULT NULL
   ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
 --

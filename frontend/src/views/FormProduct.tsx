@@ -10,10 +10,10 @@ interface FormProduct {
   product_name?: string;
   product_desc?: string;
   quantity?: number;
-  cost?: number;
-  price?: number;
-  stock?: number;
-  shelf?: number;
+  cost?: number | string;
+  price?: number | string;
+  stock?: number | string;
+  shelf?: number | string;
   supplier_id?: number;
   employee?: any;
 }
@@ -35,6 +35,7 @@ export default function FormProduct(props: FormProduct) {
   const [id, setId] = useState<number>(0);
   const [mode, setMode] = useState<string>("ADD");
   const [count, setCount] = useState<number>(0);
+  const [err, setErr] = useState<boolean>(false);
 
   const baseUrl = "http://localhost:4900";
   const handleError = (error: any) => {
@@ -72,6 +73,19 @@ export default function FormProduct(props: FormProduct) {
   }, [id]);
 
   const handleSubmit = () => {
+    if (
+      formData.product_name === "" ||
+      formData.cost === 0 ||
+      formData.price === 0 ||
+      formData.stock === 0 ||
+      formData.shelf === 0 ||
+      formData.cost === "" ||
+      formData.price === "" ||
+      formData.stock === "" ||
+      formData.shelf === ""
+    ) {
+      return setErr(true);
+    }
     if (formData.product_name !== "") {
       if (mode === "ADD") {
         axios
@@ -92,6 +106,7 @@ export default function FormProduct(props: FormProduct) {
           .catch(handleError);
       }
     }
+    setErr(false);
   };
 
   return (
@@ -115,6 +130,7 @@ export default function FormProduct(props: FormProduct) {
                 setFormData({ ...formData, product_name: e.target.value })
               }
               required
+              error={err && formData.product_name === ""}
             />
             <InputTextField
               label={"รายละเอียดสินค้า"}
@@ -131,6 +147,7 @@ export default function FormProduct(props: FormProduct) {
                 setFormData({ ...formData, cost: e.target.value })
               }
               required
+              error={err && (formData.cost === 0 || formData.cost === "")}
             />
             <InputTextField
               type="number"
@@ -140,6 +157,7 @@ export default function FormProduct(props: FormProduct) {
                 setFormData({ ...formData, price: e.target.value })
               }
               required
+              error={err && (formData.price === 0 || formData.price === "")}
             />
             <InputTextField
               type="number"
@@ -149,6 +167,7 @@ export default function FormProduct(props: FormProduct) {
                 setFormData({ ...formData, stock: e.target.value })
               }
               required
+              error={err && (formData.stock === 0 || formData.stock === "")}
             />
             <InputTextField
               type="number"
@@ -158,6 +177,7 @@ export default function FormProduct(props: FormProduct) {
                 setFormData({ ...formData, shelf: e.target.value })
               }
               required
+              error={err && (formData.shelf === 0 || formData.shelf === "")}
             />
             <Autocomplete
               value={

@@ -73,7 +73,7 @@ router.put("/", (req, res) => {
       req.body.tel,
       req.body.address,
       req.body.salary,
-      req.body.password,
+      encrypt(req.body.password),
       req.body.employee_id,
     ],
     (err, results) => {

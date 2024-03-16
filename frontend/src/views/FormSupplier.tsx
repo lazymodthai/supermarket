@@ -27,6 +27,7 @@ export default function FormSupplier(props: FormSupplier) {
   const [id, setId] = useState<number>(0);
   const [mode, setMode] = useState<string>("ADD");
   const [count, setCount] = useState<number>(0);
+  const [err, setErr] = useState<boolean>(false);
 
   const baseUrl = "http://localhost:4900";
   const handleError = (error: any) => {
@@ -64,6 +65,9 @@ export default function FormSupplier(props: FormSupplier) {
   }, [id]);
 
   const handleSubmit = () => {
+    if (formData.name === "") {
+      return setErr(true);
+    }
     if (formData.name !== "") {
       if (mode === "ADD") {
         axios
@@ -84,6 +88,7 @@ export default function FormSupplier(props: FormSupplier) {
           .catch(handleError);
       }
     }
+    setErr(false);
   };
 
   return (
@@ -107,6 +112,7 @@ export default function FormSupplier(props: FormSupplier) {
                 setFormData({ ...formData, name: e.target.value })
               }
               required
+              error={err && formData.name === ""}
             />
             <InputTextField
               label={"ที่อยู่"}

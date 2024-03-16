@@ -5,12 +5,13 @@ import InputTextField from "../components/InputTextField";
 import Typo from "../components/Typo";
 import TableEmployee from "../components/TableEmployee";
 import axios from "axios";
+import CryptoJS from "crypto-js";
 
 interface FormEmployee {
   name?: string;
   address?: string;
   tel?: string;
-  salary?: number;
+  salary?: number | string;
   employee?: any;
   password?: any;
 }
@@ -29,6 +30,7 @@ export default function FormEmployee(props: FormEmployee) {
   const [id, setId] = useState<number>(0);
   const [mode, setMode] = useState<string>("ADD");
   const [count, setCount] = useState<number>(0);
+  const [err, setErr] = useState<boolean>(false);
 
   const baseUrl = "http://localhost:4900";
   const handleError = (error: any) => {
@@ -36,6 +38,10 @@ export default function FormEmployee(props: FormEmployee) {
       "Error:",
       error.response ? error.response.data : error.message
     );
+  };
+
+  const decrypt = (data: any) => {
+    return CryptoJS.enc.Base64.parse(data).toString(CryptoJS.enc.Utf8);
   };
 
   const buttonStyle = {
@@ -59,13 +65,27 @@ export default function FormEmployee(props: FormEmployee) {
       axios
         .get(`${baseUrl}/employee/${id}`)
         .then((response) => {
-          setFormData(response.data[0]);
+          const res = response.data.map((item: any) => {
+            return { ...item, password: decrypt(item.password) };
+          });
+          setFormData(res[0]);
         })
         .catch(handleError);
     }
   }, [id]);
 
   const handleSubmit = () => {
+    if (
+      formData.name === "" ||
+      formData.address === "" ||
+      formData.tel === "" ||
+      formData.salary === 0 ||
+      formData.salary === "" ||
+      formData.password === "" ||
+      formData.password.length < 6
+    ) {
+      return setErr(true);
+    }
     if (formData.name !== "") {
       if (mode === "ADD") {
         axios
@@ -86,6 +106,7 @@ export default function FormEmployee(props: FormEmployee) {
           .catch(handleError);
       }
     }
+    setErr(false);
   };
 
   return (
@@ -109,6 +130,7 @@ export default function FormEmployee(props: FormEmployee) {
                 setFormData({ ...formData, name: e.target.value })
               }
               required
+              error={err && formData.name === ""}
             />
             <InputTextField
               label={"ที่อยู่"}
@@ -117,6 +139,7 @@ export default function FormEmployee(props: FormEmployee) {
                 setFormData({ ...formData, address: e.target.value })
               }
               required
+              error={err && formData.address === ""}
             />
             <InputTextField
               label={"เบอร์โทรศัพท์"}
@@ -125,14 +148,17 @@ export default function FormEmployee(props: FormEmployee) {
                 setFormData({ ...formData, tel: e.target.value })
               }
               required
+              error={err && formData.tel === ""}
             />
             <InputTextField
+              type="number"
               label={"เงินเดือน"}
               value={formData.salary || ""}
               onChange={(e) =>
                 setFormData({ ...formData, salary: e.target.value })
               }
               required
+              error={(err && formData.salary === 0) || formData.salary === ""}
             />
             <InputTextField
               type={"password"}
@@ -142,7 +168,14 @@ export default function FormEmployee(props: FormEmployee) {
                 setFormData({ ...formData, password: e.target.value })
               }
               required
-              maxLength={4}
+              error={
+                err &&
+                (formData.password === "" || formData.password.length < 6)
+              }
+              helperText={
+                formData.password.length < 6 ? "ต้องมี 6 ตัวอักษร" : ""
+              }
+              maxLength={6}
             />
             <Button
               variant="contained"

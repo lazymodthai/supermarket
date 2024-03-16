@@ -9,7 +9,7 @@ import axios from "axios";
 interface FormMember {
   name?: string;
   tel?: string;
-  point?: number;
+  point?: number | string;
   employee?: any;
 }
 
@@ -25,6 +25,7 @@ export default function FormMember(props: FormMember) {
   const [id, setId] = useState<number>(0);
   const [mode, setMode] = useState<string>("ADD");
   const [count, setCount] = useState<number>(0);
+  const [err, setErr] = useState<boolean>(false);
 
   const baseUrl = "http://localhost:4900";
   const handleError = (error: any) => {
@@ -62,6 +63,14 @@ export default function FormMember(props: FormMember) {
   }, [id]);
 
   const handleSubmit = () => {
+    if (
+      formData.name === "" ||
+      formData.tel === "" ||
+      formData.point === "" ||
+      formData.point === 0
+    ) {
+      return setErr(true);
+    }
     if (formData.name !== "") {
       if (mode === "ADD") {
         axios
@@ -82,6 +91,7 @@ export default function FormMember(props: FormMember) {
           .catch(handleError);
       }
     }
+    setErr(false);
   };
 
   return (
@@ -111,6 +121,7 @@ export default function FormMember(props: FormMember) {
                   setFormData({ ...formData, name: e.target.value })
                 }
                 required
+                error={err && formData.name === ""}
               />
               <InputTextField
                 label={"เบอร์โทรศัพท์"}
@@ -119,6 +130,7 @@ export default function FormMember(props: FormMember) {
                   setFormData({ ...formData, tel: e.target.value })
                 }
                 required
+                error={err && formData.tel === ""}
               />
               <InputTextField
                 label={"คะแนนสะสม"}
@@ -127,6 +139,7 @@ export default function FormMember(props: FormMember) {
                   setFormData({ ...formData, point: e.target.value })
                 }
                 required
+                error={err && (formData.point === 0 || formData.point === "")}
               />
               <Button
                 variant="contained"
