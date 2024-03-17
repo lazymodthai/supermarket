@@ -80,7 +80,7 @@ export default function TableSupplier(props: PropsTable) {
 
   const handleRemove = (id: number) => {
     if (id) {
-      api.delete(`/supplier/${id}`).then((response) => {
+      api.delete(`/supplier/${id}`).then(() => {
         loadData();
       });
     }
