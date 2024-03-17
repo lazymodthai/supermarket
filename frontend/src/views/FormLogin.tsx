@@ -1,10 +1,7 @@
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import InputTextField from "../components/InputTextField";
 import { useEffect, useState } from "react";
-import { WidthNormal } from "@mui/icons-material";
 import axios from "axios";
-import Swal from "sweetalert2";
-import CryptoJS from "crypto-js";
 
 interface PropsLogin {
   employee?: any;

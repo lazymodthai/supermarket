@@ -50,7 +50,6 @@ function createData(
 
 export default function TableSupplier(props: PropsTable) {
   const [resData, setResData] = useState<any>([]);
-  const [supplier, setSupplier] = useState<any>([]);
   const [rowData, setRowData] = useState<any>([]);
 
   const handleError = (error: any) => {
@@ -67,14 +66,8 @@ export default function TableSupplier(props: PropsTable) {
         setResData(response.data);
       })
       .catch(handleError);
-
-    axios
-      .get(`${baseUrl}/supplier`)
-      .then((response) => {
-        setSupplier(response.data);
-      })
-      .catch(handleError);
   };
+
   useEffect(() => {
     loadData();
     props.id && props.id(0, "ADD");

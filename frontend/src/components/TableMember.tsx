@@ -49,7 +49,6 @@ function createData(
 
 export default function TableMember(props: PropsTable) {
   const [resData, setResData] = useState<any>([]);
-  const [member, setMember] = useState<any>([]);
   const [rowData, setRowData] = useState<any>([]);
 
   const handleError = (error: any) => {
@@ -66,14 +65,8 @@ export default function TableMember(props: PropsTable) {
         setResData(response.data);
       })
       .catch(handleError);
-
-    axios
-      .get(`${baseUrl}/members`)
-      .then((response) => {
-        setMember(response.data);
-      })
-      .catch(handleError);
   };
+
   useEffect(() => {
     loadData();
     props.id && props.id(0, "ADD");

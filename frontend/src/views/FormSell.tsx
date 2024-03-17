@@ -11,8 +11,6 @@ interface PropsSell {
 
 export default function FormSell(props: PropsSell) {
   const [load, setLoad] = useState<boolean>(false);
-  const [id, setId] = useState<number>(0);
-  const [mode, setMode] = useState<string>("");
   const [productList, setProductList] = useState<any>([]);
   const [sum, setSum] = useState<any>(0);
   const [total, setTotal] = useState<any>(0);

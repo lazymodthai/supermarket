@@ -1,4 +1,4 @@
-import { Autocomplete, Button, TextField, Typography } from "@mui/material";
+import { Button } from "@mui/material";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import { useEffect, useState } from "react";
 import InputTextField from "../components/InputTextField";
@@ -25,7 +25,6 @@ export default function FormEmployee(props: FormEmployee) {
     password: "",
   };
   const [formData, setFormData] = useState<FormEmployee>(formInit);
-  const [employee, setEmployee] = useState<any>([]);
   const [load, setLoad] = useState<boolean>(false);
   const [id, setId] = useState<number>(0);
   const [mode, setMode] = useState<string>("ADD");
@@ -50,15 +49,6 @@ export default function FormEmployee(props: FormEmployee) {
     fontSize: 24,
     fontFamily: "Pridi",
   };
-
-  useEffect(() => {
-    axios
-      .get(`${baseUrl}/employee`)
-      .then((response) => {
-        setEmployee(response.data);
-      })
-      .catch(handleError);
-  }, []);
 
   useEffect(() => {
     if (id) {
@@ -188,13 +178,7 @@ export default function FormEmployee(props: FormEmployee) {
               เพิ่ม/แก้ไข
             </Button>
           </Grid2>
-          <Grid2
-            xs={9}
-            padding={"0 32px"}
-            // bgcolor={"red"}
-            // maxHeight={"500px"}
-            // overflow={"scroll"}
-          >
+          <Grid2 xs={9} padding={"0 32px"}>
             <Typo
               value={`รายชื่อพนักงาน (${count})`}
               variant="h5"

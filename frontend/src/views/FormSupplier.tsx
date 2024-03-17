@@ -1,4 +1,4 @@
-import { Autocomplete, Button, TextField, Typography } from "@mui/material";
+import { Button } from "@mui/material";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import { useEffect, useState } from "react";
 import InputTextField from "../components/InputTextField";
@@ -22,7 +22,6 @@ export default function FormSupplier(props: FormSupplier) {
     tel: "",
   };
   const [formData, setFormData] = useState<FormSupplier>(formInit);
-  const [supplier, setSupplier] = useState<any>([]);
   const [load, setLoad] = useState<boolean>(false);
   const [id, setId] = useState<number>(0);
   const [mode, setMode] = useState<string>("ADD");
@@ -43,15 +42,6 @@ export default function FormSupplier(props: FormSupplier) {
     fontSize: 24,
     fontFamily: "Pridi",
   };
-
-  useEffect(() => {
-    axios
-      .get(`${baseUrl}/supplier`)
-      .then((response) => {
-        setSupplier(response.data);
-      })
-      .catch(handleError);
-  }, []);
 
   useEffect(() => {
     if (id) {

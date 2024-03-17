@@ -9,9 +9,7 @@ import FormEmployee from "./FormEmployee";
 import FormMember from "./FormMember";
 import FormSell from "./FormSell";
 import FormLogin from "./FormLogin";
-import Typo from "../components/Typo";
 import Dashboard from "./Dashboard";
-import Swal from "sweetalert2";
 
 export default function Main() {
   const buttonStyle = {

@@ -1,8 +1,7 @@
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import { useEffect, useState } from "react";
-import { Autocomplete, Box, Button, TextField } from "@mui/material";
+import { Box } from "@mui/material";
 import axios from "axios";
-import Swal from "sweetalert2";
 import TableBill from "../components/TableBill";
 
 interface PropsDashboard {
@@ -10,10 +9,6 @@ interface PropsDashboard {
 }
 
 export default function Dashboard(props: PropsDashboard) {
-  const [load, setLoad] = useState<boolean>(false);
-  const [total, setTotal] = useState<any>(0);
-  const [vat, setVat] = useState<any>(0);
-  const [discount, setDiscount] = useState<any>(0);
   const [summary, setSummary] = useState<any>([]);
   const [bill, setBill] = useState<any>([]);
   const baseUrl = "http://localhost:4900";
@@ -48,13 +43,6 @@ export default function Dashboard(props: PropsDashboard) {
   };
 
   useEffect(() => {
-    const sum = bill.reduce((accumulator: any, currentValue: any) => {
-      return accumulator + currentValue.total_summary;
-    }, 0);
-    setTotal(sum);
-  }, [bill]);
-
-  useEffect(() => {
     setSum();
   }, []);
 
@@ -80,7 +68,7 @@ export default function Dashboard(props: PropsDashboard) {
           </Grid2>
         </Grid2>
         <Grid2 xs={12} height={"70vh"}>
-          <TableBill load={load} id={(val) => viewBill(val)} />
+          <TableBill id={(val) => viewBill(val)} />
         </Grid2>
       </Grid2>
       <Grid2 xs={4} container display={"flex"} flexDirection={"column"} gap={2}>

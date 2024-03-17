@@ -50,7 +50,6 @@ function createData(
 
 export default function TableEmployee(props: PropsTable) {
   const [resData, setResData] = useState<any>([]);
-  const [employee, setEmployee] = useState<any>([]);
   const [rowData, setRowData] = useState<any>([]);
 
   const handleError = (error: any) => {
@@ -67,14 +66,8 @@ export default function TableEmployee(props: PropsTable) {
         setResData(response.data);
       })
       .catch(handleError);
-
-    axios
-      .get(`${baseUrl}/employee`)
-      .then((response) => {
-        setEmployee(response.data);
-      })
-      .catch(handleError);
   };
+
   useEffect(() => {
     loadData();
     props.id && props.id(0, "ADD");
