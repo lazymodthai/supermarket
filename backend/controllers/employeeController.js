@@ -1,22 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const mysql = require("mysql2");
-
+const connection = require("../connect");
 const CryptoJS = require("crypto-js");
 
 const encrypt = (text) => {
   return CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(text));
 };
-
-const decrypt = (data) => {
-  return CryptoJS.enc.Base64.parse(data).toString(CryptoJS.enc.Utf8);
-};
-
-const connection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  database: "supermarket",
-});
 
 //GET
 router.get("/", (req, res) => {
