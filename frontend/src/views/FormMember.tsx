@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import InputTextField from "../components/InputTextField";
 import Typo from "../components/Typo";
 import TableMember from "../components/TableMember";
-import axios from "axios";
+import { api } from "../api";
 
 interface FormMember {
   name?: string;
@@ -26,14 +26,6 @@ export default function FormMember(props: FormMember) {
   const [count, setCount] = useState<number>(0);
   const [err, setErr] = useState<boolean>(false);
 
-  const baseUrl = "http://localhost:4900";
-  const handleError = (error: any) => {
-    console.error(
-      "Error:",
-      error.response ? error.response.data : error.message
-    );
-  };
-
   const buttonStyle = {
     marginBottom: "16px",
     height: 62,
@@ -43,12 +35,9 @@ export default function FormMember(props: FormMember) {
 
   useEffect(() => {
     if (id) {
-      axios
-        .get(`${baseUrl}/members/${id}`)
-        .then((response) => {
-          setFormData(response.data[0]);
-        })
-        .catch(handleError);
+      api.get(`/members/${id}`).then((response) => {
+        setFormData(response.data[0]);
+      });
     }
   }, [id]);
 
@@ -63,22 +52,16 @@ export default function FormMember(props: FormMember) {
     }
     if (formData.name !== "") {
       if (mode === "ADD") {
-        axios
-          .post(`${baseUrl}/members`, formData)
-          .then((response) => {
-            setLoad(!load);
-            setFormData(formInit);
-          })
-          .catch(handleError);
+        api.post(`/members`, formData).then(() => {
+          setLoad(!load);
+          setFormData(formInit);
+        });
       } else {
-        axios
-          .put(`${baseUrl}/members`, formData)
-          .then((response) => {
-            setLoad(!load);
-            setFormData(formInit);
-            setMode("ADD");
-          })
-          .catch(handleError);
+        api.put(`/members`, formData).then(() => {
+          setLoad(!load);
+          setFormData(formInit);
+          setMode("ADD");
+        });
       }
     }
     setErr(false);

@@ -2,8 +2,8 @@ import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import TableSell from "../components/TableSell";
 import { useEffect, useState } from "react";
 import { Autocomplete, Box, Button, TextField } from "@mui/material";
-import axios from "axios";
 import Swal from "sweetalert2";
+import { api } from "../api";
 
 interface PropsSell {
   employee?: any;
@@ -18,21 +18,11 @@ export default function FormSell(props: PropsSell) {
   const [discount, setDiscount] = useState<any>(0);
   const [members, setMembers] = useState<any>([]);
   const [member, setMember] = useState<any>({});
-  const baseUrl = "http://localhost:4900";
-  const handleError = (error: any) => {
-    console.error(
-      "Error:",
-      error.response ? error.response.data : error.message
-    );
-  };
 
   const setMem = () => {
-    axios
-      .get(`${baseUrl}/members`)
-      .then((response) => {
-        setMembers(response.data);
-      })
-      .catch(handleError);
+    api.get(`/members`).then((response) => {
+      setMembers(response.data);
+    });
   };
 
   useEffect(() => {
@@ -74,17 +64,17 @@ export default function FormSell(props: PropsSell) {
 
     try {
       if (sellList.length > 0) {
-        await axios.put(`${baseUrl}/products/sell`, sellList);
-        await axios.post(`${baseUrl}/products/bill`, sellList);
+        await api.put(`/products/sell`, sellList);
+        await api.post(`/products/bill`, sellList);
         const pointToUpdate = total / 20;
-        await axios.put(`${baseUrl}/members/point`, {
+        await api.put(`/members/point`, {
           member_id: member.member_id,
           point: pointToUpdate,
         });
         success();
       }
     } catch (error) {
-      handleError(error);
+      console.log(error);
     }
   };
 

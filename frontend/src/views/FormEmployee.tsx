@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import InputTextField from "../components/InputTextField";
 import Typo from "../components/Typo";
 import TableEmployee from "../components/TableEmployee";
-import axios from "axios";
 import CryptoJS from "crypto-js";
+import { api } from "../api";
 
 interface FormEmployee {
   name?: string;
@@ -31,14 +31,6 @@ export default function FormEmployee(props: FormEmployee) {
   const [count, setCount] = useState<number>(0);
   const [err, setErr] = useState<boolean>(false);
 
-  const baseUrl = "http://localhost:4900";
-  const handleError = (error: any) => {
-    console.error(
-      "Error:",
-      error.response ? error.response.data : error.message
-    );
-  };
-
   const decrypt = (data: any) => {
     return CryptoJS.enc.Base64.parse(data).toString(CryptoJS.enc.Utf8);
   };
@@ -52,15 +44,12 @@ export default function FormEmployee(props: FormEmployee) {
 
   useEffect(() => {
     if (id) {
-      axios
-        .get(`${baseUrl}/employee/${id}`)
-        .then((response) => {
-          const res = response.data.map((item: any) => {
-            return { ...item, password: decrypt(item.password) };
-          });
-          setFormData(res[0]);
-        })
-        .catch(handleError);
+      api.get(`/employee/${id}`).then((response) => {
+        const res = response.data.map((item: any) => {
+          return { ...item, password: decrypt(item.password) };
+        });
+        setFormData(res[0]);
+      });
     }
   }, [id]);
 
@@ -78,22 +67,16 @@ export default function FormEmployee(props: FormEmployee) {
     }
     if (formData.name !== "") {
       if (mode === "ADD") {
-        axios
-          .post(`${baseUrl}/employee`, formData)
-          .then((response) => {
-            setLoad(!load);
-            setFormData(formInit);
-          })
-          .catch(handleError);
+        api.post(`/employee`, formData).then(() => {
+          setLoad(!load);
+          setFormData(formInit);
+        });
       } else {
-        axios
-          .put(`${baseUrl}/employee`, formData)
-          .then((response) => {
-            setLoad(!load);
-            setFormData(formInit);
-            setMode("ADD");
-          })
-          .catch(handleError);
+        api.put(`/employee`, formData).then(() => {
+          setLoad(!load);
+          setFormData(formInit);
+          setMode("ADD");
+        });
       }
     }
     setErr(false);

@@ -6,11 +6,10 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-const baseUrl = "http://localhost:4900";
+import { api } from "../api";
 
 interface PropsTable {
   id: (val: any, type: any) => void;
@@ -52,20 +51,10 @@ export default function TableSupplier(props: PropsTable) {
   const [resData, setResData] = useState<any>([]);
   const [rowData, setRowData] = useState<any>([]);
 
-  const handleError = (error: any) => {
-    console.error(
-      "Error:",
-      error.response ? error.response.data : error.message
-    );
-  };
-
   const loadData = () => {
-    axios
-      .get(`${baseUrl}/supplier`)
-      .then((response) => {
-        setResData(response.data);
-      })
-      .catch(handleError);
+    api.get(`/supplier`).then((response) => {
+      setResData(response.data);
+    });
   };
 
   useEffect(() => {
@@ -91,13 +80,9 @@ export default function TableSupplier(props: PropsTable) {
 
   const handleRemove = (id: number) => {
     if (id) {
-      axios
-        .delete(`${baseUrl}/supplier/${id}`)
-        .then((response) => {
-          console.log(`Deleted ${response.data}`);
-          loadData();
-        })
-        .catch(handleError);
+      api.delete(`/supplier/${id}`).then((response) => {
+        loadData();
+      });
     }
   };
 

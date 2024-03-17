@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import InputTextField from "../components/InputTextField";
 import Typo from "../components/Typo";
 import TableProduct from "../components/TableProduct";
-import axios from "axios";
+import { api } from "../api";
 
 interface FormProduct {
   product_name?: string;
@@ -37,14 +37,6 @@ export default function FormProduct(props: FormProduct) {
   const [count, setCount] = useState<number>(0);
   const [err, setErr] = useState<boolean>(false);
 
-  const baseUrl = "http://localhost:4900";
-  const handleError = (error: any) => {
-    console.error(
-      "Error:",
-      error.response ? error.response.data : error.message
-    );
-  };
-
   const buttonStyle = {
     marginBottom: "16px",
     height: 62,
@@ -53,22 +45,16 @@ export default function FormProduct(props: FormProduct) {
   };
 
   useEffect(() => {
-    axios
-      .get(`${baseUrl}/supplier`)
-      .then((response) => {
-        setSupplier(response.data);
-      })
-      .catch(handleError);
+    api.get(`/supplier`).then((response) => {
+      setSupplier(response.data);
+    });
   }, []);
 
   useEffect(() => {
     if (id) {
-      axios
-        .get(`${baseUrl}/products/${id}`)
-        .then((response) => {
-          setFormData(response.data[0]);
-        })
-        .catch(handleError);
+      api.get(`/products/${id}`).then((response) => {
+        setFormData(response.data[0]);
+      });
     }
   }, [id]);
 
@@ -88,22 +74,22 @@ export default function FormProduct(props: FormProduct) {
     }
     if (formData.product_name !== "") {
       if (mode === "ADD") {
-        axios
-          .post(`${baseUrl}/products`, formData)
-          .then((response) => {
+        api
+          .post(`/products`, formData)
+          .then(() => {
             setLoad(!load);
             setFormData(formInit);
           })
-          .catch(handleError);
+          .catch(() => console.log("Error"));
       } else {
-        axios
-          .put(`${baseUrl}/products`, formData)
-          .then((response) => {
+        api
+          .put(`/products`, formData)
+          .then(() => {
             setLoad(!load);
             setFormData(formInit);
             setMode("ADD");
           })
-          .catch(handleError);
+          .catch(() => console.log("Error"));
       }
     }
     setErr(false);

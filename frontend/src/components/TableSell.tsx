@@ -6,15 +6,12 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import axios from "axios";
 import { useEffect, useState } from "react";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
 import QueueIcon from "@mui/icons-material/Queue";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import InputTextField from "./InputTextField";
-const baseUrl = "http://localhost:4900";
+import { api } from "../api";
 
 interface PropsTable {
   id: (id: any, name: any, qty: any, mode: any) => void;
@@ -71,27 +68,14 @@ export default function TableSell(props: PropsTable) {
   const [filter, setFilter] = useState<string>("");
   const [tableData, setTableData] = useState<any>([]);
 
-  const handleError = (error: any) => {
-    console.error(
-      "Error:",
-      error.response ? error.response.data : error.message
-    );
-  };
-
   const loadData = () => {
-    axios
-      .get(`${baseUrl}/products`)
-      .then((response) => {
-        setResData(response.data);
-      })
-      .catch(handleError);
+    api.get(`/products`).then((response) => {
+      setResData(response.data);
+    });
 
-    axios
-      .get(`${baseUrl}/supplier`)
-      .then((response) => {
-        setSupplier(response.data);
-      })
-      .catch(handleError);
+    api.get(`/supplier`).then((response) => {
+      setSupplier(response.data);
+    });
   };
   useEffect(() => {
     loadData();

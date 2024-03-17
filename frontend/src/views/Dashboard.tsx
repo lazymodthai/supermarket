@@ -1,8 +1,8 @@
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import { useEffect, useState } from "react";
 import { Box } from "@mui/material";
-import axios from "axios";
 import TableBill from "../components/TableBill";
+import { api } from "../api";
 
 interface PropsDashboard {
   employee?: any;
@@ -11,35 +11,22 @@ interface PropsDashboard {
 export default function Dashboard(props: PropsDashboard) {
   const [summary, setSummary] = useState<any>([]);
   const [bill, setBill] = useState<any>([]);
-  const baseUrl = "http://localhost:4900";
-  const handleError = (error: any) => {
-    console.error(
-      "Error:",
-      error.response ? error.response.data : error.message
-    );
-  };
 
   const setSum = () => {
-    axios
-      .post(`${baseUrl}/bills`, { id: props.employee.employee_id })
-      .then((response) => {
-        const sum = response.data.reduce(
-          (accumulator: any, currentValue: any) =>
-            accumulator + currentValue.total_summary,
-          0
-        );
-        setSummary(sum);
-      })
-      .catch(handleError);
+    api.post(`/bills`, { id: props.employee.employee_id }).then((response) => {
+      const sum = response.data.reduce(
+        (accumulator: any, currentValue: any) =>
+          accumulator + currentValue.total_summary,
+        0
+      );
+      setSummary(sum);
+    });
   };
 
   const viewBill = (id: number) => {
-    axios
-      .get(`${baseUrl}/bills/${id}`)
-      .then((response) => {
-        setBill(response.data[0]);
-      })
-      .catch(handleError);
+    api.get(`/bills/${id}`).then((response) => {
+      setBill(response.data[0]);
+    });
   };
 
   useEffect(() => {

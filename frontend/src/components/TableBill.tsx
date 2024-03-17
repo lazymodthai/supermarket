@@ -6,10 +6,9 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
-const baseUrl = "http://localhost:4900";
+import { api } from "../api";
 
 interface PropsTable {
   id?: (val: any) => void;
@@ -47,21 +46,12 @@ export default function TableBill(props: PropsTable) {
   const emp: any = localStorage.getItem("employee");
   const emp2: any = JSON.parse(emp);
 
-  const handleError = (error: any) => {
-    console.error(
-      "Error:",
-      error.response ? error.response.data : error.message
-    );
+  const loadData = () => {
+    api.post(`/bills`, { id: emp2.employee_id }).then((response) => {
+      setResData(response.data);
+    });
   };
 
-  const loadData = () => {
-    axios
-      .post(`${baseUrl}/bills`, { id: emp2.employee_id })
-      .then((response) => {
-        setResData(response.data);
-      })
-      .catch(handleError);
-  };
   useEffect(() => {
     loadData();
   }, [props.load]);

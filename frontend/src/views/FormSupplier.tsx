@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import InputTextField from "../components/InputTextField";
 import Typo from "../components/Typo";
 import TableSupplier from "../components/TableSupplier";
-import axios from "axios";
+import { api } from "../api";
 
 interface FormSupplier {
   name?: string;
@@ -28,14 +28,6 @@ export default function FormSupplier(props: FormSupplier) {
   const [count, setCount] = useState<number>(0);
   const [err, setErr] = useState<boolean>(false);
 
-  const baseUrl = "http://localhost:4900";
-  const handleError = (error: any) => {
-    console.error(
-      "Error:",
-      error.response ? error.response.data : error.message
-    );
-  };
-
   const buttonStyle = {
     marginBottom: "16px",
     height: 62,
@@ -45,12 +37,9 @@ export default function FormSupplier(props: FormSupplier) {
 
   useEffect(() => {
     if (id) {
-      axios
-        .get(`${baseUrl}/supplier/${id}`)
-        .then((response) => {
-          setFormData(response.data[0]);
-        })
-        .catch(handleError);
+      api.get(`/supplier/${id}`).then((response) => {
+        setFormData(response.data[0]);
+      });
     }
   }, [id]);
 
@@ -60,22 +49,16 @@ export default function FormSupplier(props: FormSupplier) {
     }
     if (formData.name !== "") {
       if (mode === "ADD") {
-        axios
-          .post(`${baseUrl}/supplier`, formData)
-          .then((response) => {
-            setLoad(!load);
-            setFormData(formInit);
-          })
-          .catch(handleError);
+        api.post(`/supplier`, formData).then(() => {
+          setLoad(!load);
+          setFormData(formInit);
+        });
       } else {
-        axios
-          .put(`${baseUrl}/supplier`, formData)
-          .then((response) => {
-            setLoad(!load);
-            setFormData(formInit);
-            setMode("ADD");
-          })
-          .catch(handleError);
+        api.put(`/supplier`, formData).then(() => {
+          setLoad(!load);
+          setFormData(formInit);
+          setMode("ADD");
+        });
       }
     }
     setErr(false);
